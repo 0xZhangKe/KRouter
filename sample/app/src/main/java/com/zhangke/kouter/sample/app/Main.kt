@@ -6,5 +6,3 @@ import com.zhangke.krouter.sample.core.Screen
 fun main() {
     KRouter.route<Screen>("scree/home/detail").let(::println)
 }
-
-
