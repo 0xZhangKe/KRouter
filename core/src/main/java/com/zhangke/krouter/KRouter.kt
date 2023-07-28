@@ -1,18 +1,11 @@
 package com.zhangke.krouter
 
 import java.net.URI
-import java.util.*
 
 object KRouter {
 
-    val cache = mutableMapOf<String, List<Any>>()
-
-    @Suppress("UNCHECKED_CAST")
     inline fun <reified T> route(router: String): T? {
-        val key = T::class.qualifiedName!!
-        val serviceList = cache.getOrPut(key) {
-            ServiceLoaderUtils.findServices<T>() as List<Any>
-        } as List<T>
+        val serviceList = ServiceLoaderUtils.findServices<T>()
         return findServiceByRouter(serviceList, router)
     }
 
@@ -26,7 +19,7 @@ object KRouter {
             if (serviceRouter.isNullOrEmpty().not()) {
                 val serviceUri = URI.create(serviceRouter!!).baseUri
                 serviceUri == routerUri
-            }else{
+            } else {
                 false
             }
         }
@@ -39,9 +32,5 @@ object KRouter {
             it is Router
         } as? Router ?: return null
         return routerAnnotation.router
-    }
-
-    fun flush() {
-        cache.clear()
     }
 }
