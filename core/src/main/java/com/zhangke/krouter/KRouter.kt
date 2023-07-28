@@ -1,26 +1,47 @@
 package com.zhangke.krouter
 
+import java.net.URI
 import java.util.*
 
 object KRouter {
 
-    inline fun <reified T> find(route: String): T? {
-        val target = findImplement<T>() ?: return null
-        target::class.annotations.find {
-            it is Route
-        }?.let {
-            println((it as Route).route)
+    val cache = mutableMapOf<String, List<Any>>()
+
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> route(router: String): T? {
+        val key = T::class.qualifiedName!!
+        val serviceList = cache.getOrPut(key) {
+            ServiceLoaderUtils.findServices<T>() as List<Any>
+        } as List<T>
+        return findServiceByRouter(serviceList, router)
+    }
+
+    inline fun <reified T> findServiceByRouter(
+        serviceList: List<T>,
+        router: String,
+    ): T? {
+        val routerUri = URI.create(router).baseUri
+        val service = serviceList.firstOrNull {
+            val serviceRouter = getRouterFromAnnotation(it)
+            if (serviceRouter.isNullOrEmpty().not()) {
+                val serviceUri = URI.create(serviceRouter!!).baseUri
+                serviceUri == routerUri
+            }else{
+                false
+            }
         }
-        return null
+        return service
     }
 
-    inline fun <reified T> findImplement(): T {
-        val implements = findImplements<T>()
-        return implements.first()
+    inline fun <reified T> getRouterFromAnnotation(target: T): String? {
+        if (target == null) return null
+        val routerAnnotation = target!!::class.annotations.firstOrNull {
+            it is Router
+        } as? Router ?: return null
+        return routerAnnotation.router
     }
 
-    inline fun <reified T> findImplements(): List<T> {
-        val clazz = T::class.java
-        return ServiceLoader.load(clazz, clazz.classLoader).iterator().asSequence().toList()
+    fun flush() {
+        cache.clear()
     }
 }

@@ -4,6 +4,7 @@ import com.zhangke.krouter.KRouter
 import com.zhangke.krouter.sample.core.Screen
 
 fun main() {
-    val screens = KRouter.findImplements<Screen>()
-    println(screens.joinToString(",") { it::class.simpleName.toString() })
+    KRouter.route<Screen>("scree/home/detail").let(::println)
 }
+
+

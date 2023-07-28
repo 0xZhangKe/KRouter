@@ -12,5 +12,7 @@ java {
 }
 
 dependencies {
+    testImplementation("junit:junit:4.+")
+
     implementation(kotlin("reflect"))
 }

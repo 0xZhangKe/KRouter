@@ -4,8 +4,7 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSVisitorVoid
-import com.zhangke.krouter.Route
-import java.io.File
+import com.zhangke.krouter.Router
 
 class KRouterProcessorProvider : SymbolProcessorProvider {
 
@@ -17,7 +16,7 @@ class KRouterProcessorProvider : SymbolProcessorProvider {
 class KRouterProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        resolver.getSymbolsWithAnnotation(Route::class.qualifiedName!!)
+        resolver.getSymbolsWithAnnotation(Router::class.qualifiedName!!)
             .map { it as KSClassDeclaration }
             .toList()
             .forEach { it.accept(KRouterVisitor(environment, resolver), Unit) }
@@ -42,8 +41,8 @@ class KRouterVisitor(
 
     private fun findSuperType(classDeclaration: KSClassDeclaration): String {
         val className = classDeclaration.qualifiedName?.asString().orEmpty()
-        val routeAnnotation = classDeclaration.requireAnnotation<Route>()
-        val typeFromAnnotation = routeAnnotation.findArgumentTypeByName("type")
+        val routerAnnotation = classDeclaration.requireAnnotation<Router>()
+        val typeFromAnnotation = routerAnnotation.findArgumentTypeByName("type")
             ?.takeIf { it != badTypeName }
         if (typeFromAnnotation != null) {
             val superTypesIterator = classDeclaration.superTypes.iterator()
@@ -81,14 +80,14 @@ class KRouterVisitor(
         superTypeName: String,
         serviceClassDeclaration: KSClassDeclaration,
     ) {
-        val resourceFileName = "META-INF/services/$superTypeName"
+        val resourceFileName = ServicesFiles.getPath(superTypeName)
         val serviceClassFullName = serviceClassDeclaration.qualifiedName!!.asString()
-        val existsKSFile = resolver.getAllFiles().firstOrNull { ksFile ->
-            val fileName = File(ksFile.filePath, ksFile.fileName).canonicalPath
-            fileName == resourceFileName
-        }
-        if (existsKSFile != null) {
-            val existsFile = File(existsKSFile.filePath, existsKSFile.fileName)
+        val existsFile = environment.codeGenerator
+            .generatedFile
+            .firstOrNull { generatedFile ->
+                generatedFile.canonicalPath.endsWith(resourceFileName)
+            }
+        if (existsFile != null) {
             val services = existsFile.inputStream().use { ServicesFiles.readServiceFile(it) }
             services.add(serviceClassFullName)
             existsFile.outputStream().use { ServicesFiles.writeServiceFile(services, it) }
