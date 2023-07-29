@@ -1,3 +1,8 @@
 package com.zhangke.krouter.sample.core
 
-interface Screen
+interface Screen {
+
+    fun content() {
+        println("${this::class.simpleName} not implement the content function")
+    }
+}

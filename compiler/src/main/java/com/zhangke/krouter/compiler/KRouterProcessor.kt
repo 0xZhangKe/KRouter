@@ -4,7 +4,7 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSVisitorVoid
-import com.zhangke.krouter.Router
+import com.zhangke.krouter.Destination
 
 class KRouterProcessorProvider : SymbolProcessorProvider {
 
@@ -16,17 +16,16 @@ class KRouterProcessorProvider : SymbolProcessorProvider {
 class KRouterProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        resolver.getSymbolsWithAnnotation(Router::class.qualifiedName!!)
+        resolver.getSymbolsWithAnnotation(Destination::class.qualifiedName!!)
             .map { it as KSClassDeclaration }
             .toList()
-            .forEach { it.accept(KRouterVisitor(environment, resolver), Unit) }
+            .forEach { it.accept(KRouterVisitor(environment), Unit) }
         return emptyList()
     }
 }
 
 class KRouterVisitor(
-    private val environment: SymbolProcessorEnvironment,
-    private val resolver: Resolver
+    private val environment: SymbolProcessorEnvironment
 ) : KSVisitorVoid() {
 
     companion object {
@@ -41,7 +40,7 @@ class KRouterVisitor(
 
     private fun findSuperType(classDeclaration: KSClassDeclaration): String {
         val className = classDeclaration.qualifiedName?.asString().orEmpty()
-        val routerAnnotation = classDeclaration.requireAnnotation<Router>()
+        val routerAnnotation = classDeclaration.requireAnnotation<Destination>()
         val typeFromAnnotation = routerAnnotation.findArgumentTypeByName("type")
             ?.takeIf { it != badTypeName }
         if (typeFromAnnotation != null) {

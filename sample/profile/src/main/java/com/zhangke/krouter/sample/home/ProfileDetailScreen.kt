@@ -1,7 +1,7 @@
 package com.zhangke.krouter.sample.home
 
-import com.zhangke.krouter.Router
+import com.zhangke.krouter.Destination
 import com.zhangke.krouter.sample.core.Screen
 
-@Router(router = "scree/profile/detail")
+@Destination(router = "scree/profile/detail")
 class ProfileDetailScreen: Screen

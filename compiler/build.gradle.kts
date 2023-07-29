@@ -1,10 +1,8 @@
 plugins {
     id("java")
     kotlin("jvm")
+    id("maven-publish")
 }
-
-group = "org.example"
-version = "1.0-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11

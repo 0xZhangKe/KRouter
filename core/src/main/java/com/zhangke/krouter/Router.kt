@@ -1,10 +1,5 @@
 package com.zhangke.krouter
 
-import kotlin.reflect.KClass
-
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Router(
-    val router: String,
-    val type: KClass<*> = Unit::class,
-)
+annotation class Router
