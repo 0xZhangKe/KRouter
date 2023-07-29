@@ -1,9 +1,13 @@
+[![Release](https://jitpack.io/v/0xZhangKe/KRouter.svg)](https://jitpack.io/#0xZhangKe/KRouter)
+
 # KRouter
 Find interface implementation by uri string.
 
 For Kotlin module to module communication.
 
 The main purpose is to open the compose screen from other modules(e.g. [Voyager](https://voyager.adriel.cafe/navigation)).
+
+Base on ServiceLoader, KSP and Kotlin reflect.
 
 # Usage
 First, define a interface.
@@ -32,6 +36,24 @@ val profileScreen = KRouter.route<Screen>("screen/profile?name=zhangke")
 As show above, you will get homeScreen and router property is `screen/home?name=zhangke`.
 
 See the [sample.app](https://github.com/0xZhangKe/KRouter/tree/main/sample/app/src/main/java/com/zhangke/kouter/sample/app) module for a more detailed example.
+
+## Integration
+Firstly, you must set up [KSP](https://kotlinlang.org/docs/ksp-overview.html) in your project.
+Then, add KRouter dependency in module.
+```kts
+// module`s build.gradle.kts
+implementation(project(":core"))
+ksp(project(":compiler"))
+```
+Additionally, add resources dir in source sets.
+```
+// module`s build.gradle.kts
+kotlin {
+    sourceSets.main {
+        resources.srcDir("build/generated/ksp/main/resources")
+    }
+}
+```
 
 ## @Destination
 Destination annotation is defined for a route Destination.
