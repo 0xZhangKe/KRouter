@@ -42,8 +42,8 @@ Firstly, you must set up [KSP](https://kotlinlang.org/docs/ksp-overview.html) in
 Then, add KRouter dependency in module.
 ```kts
 // module`s build.gradle.kts
-implementation(project(":core"))
-ksp(project(":compiler"))
+implementation("com.github.0xZhangKe.KRouter:core:0.1.4")
+ksp("com.github.0xZhangKe.KRouter:compiler:0.1.4")
 ```
 Additionally, add resources dir in source sets.
 ```
