@@ -10,7 +10,7 @@ The main purpose is to open the compose screen from other modules(e.g. [Voyager]
 Base on ServiceLoader, KSP and Kotlin reflect.
 
 # Usage
-First, define a interface.
+Firstly, define a interface.
 ```kotlin
 interface Screen
 ```
@@ -27,6 +27,8 @@ class ProfileScreen : Screen {
 
 ```
 This implementation can be distributed to any modules.
+
+Note that Destination class must have a No-Arg constructor.
 
 Now, you can route to any Screen by router.
 ```kotlin
@@ -57,11 +59,13 @@ kotlin {
 
 ## @Destination
 Destination annotation is defined for a route Destination.
-It`s have two parameters:
-- route: This destination`s identify route, must be uri string.
+It's have two parameters:
+- route: This destination's identify route, must be uri string.
 - type: Which interface or abstract class this destination for, ignore this if just have single super type.
 
 ## @Router
 This annotation is used to identify which property is used to accept the route.
+
 So, this property must be a class`s variable property or constructor parameter.
+
 The router is passed into this field when the destination object is constructed.
