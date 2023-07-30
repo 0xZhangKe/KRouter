@@ -35,21 +35,22 @@ Now, you can route to any Screen by router.
 val homeScreen = KRouter.route<Screen>("screen/home?name=zhangke")
 val profileScreen = KRouter.route<Screen>("screen/profile?name=zhangke")
 ```
-As show above, you will get homeScreen and router property is `screen/home?name=zhangke`.
+As show above, you will get homeScreen, and it's router property is `screen/home?name=zhangke`.
 
 See the [sample.app](https://github.com/0xZhangKe/KRouter/tree/main/sample/app/src/main/java/com/zhangke/kouter/sample/app) module for a more detailed example.
 
 ## Integration
 Firstly, you must set up [KSP](https://kotlinlang.org/docs/ksp-overview.html) in your project.
+
 Then, add KRouter dependency in module.
 ```kts
-// module`s build.gradle.kts
+// module's build.gradle.kts
 implementation("com.github.0xZhangKe.KRouter:core:0.1.4")
 ksp("com.github.0xZhangKe.KRouter:compiler:0.1.4")
 ```
 Additionally, add resources dir in source sets.
-```
-// module`s build.gradle.kts
+```kts
+// module's build.gradle.kts
 kotlin {
     sourceSets.main {
         resources.srcDir("build/generated/ksp/main/resources")
@@ -59,13 +60,14 @@ kotlin {
 
 ## @Destination
 Destination annotation is defined for a route Destination.
-It's have two parameters:
-- route: This destination's identify route, must be uri string.
-- type: Which interface or abstract class this destination for, ignore this if just have single super type.
+
+It's having two parameters:
+- `route`: This destination's identify route, must be uri string.
+- `type`: Which interface or abstract class this destination for, ignore this if just have single super type.
 
 ## @Router
 This annotation is used to identify which property is used to accept the route.
 
-So, this property must be a class`s variable property or constructor parameter.
+So, this property must be a class's variable property or constructor parameter.
 
 The router is passed into this field when the destination object is constructed.
