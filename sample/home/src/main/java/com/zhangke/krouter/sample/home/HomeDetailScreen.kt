@@ -4,7 +4,7 @@ import com.zhangke.krouter.Destination
 import com.zhangke.krouter.Router
 import com.zhangke.krouter.sample.core.Screen
 
-@Destination(router = "scree/home/detail")
+@Destination("screen/home/detail")
 class HomeDetailScreen(@Router val router: String = "") : Screen {
 
     override fun content() {

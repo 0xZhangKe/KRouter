@@ -92,7 +92,7 @@ class KRouterVisitor(
             existsFile.outputStream().use { ServicesFiles.writeServiceFile(services, it) }
         } else {
             environment.codeGenerator.createNewFile(
-                dependencies = Dependencies(aggregating = false, serviceClassDeclaration.containingFile!!),
+                dependencies = Dependencies(aggregating = true, serviceClassDeclaration.containingFile!!),
                 packageName = "",
                 fileName = resourceFileName,
                 extensionName = "",

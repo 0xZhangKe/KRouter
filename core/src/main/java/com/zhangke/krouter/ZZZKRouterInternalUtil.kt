@@ -21,20 +21,16 @@ object ZZZKRouterInternalUtil {
     ): Any? {
         val routerUri = URI.create(router).baseUri
         val service = serviceClassList.firstOrNull {
-            val serviceRouter = getRouterFromClassAnnotation(it::class)
-            if (serviceRouter.isNullOrEmpty().not()) {
-                val serviceUri = URI.create(serviceRouter!!).baseUri
-                serviceUri == routerUri
-            } else {
-                false
-            }
+            getRouterFromClassAnnotation(it::class).map { route ->
+                URI.create(route).baseUri
+            }.contains(routerUri)
         }
         return service
     }
 
-    private fun getRouterFromClassAnnotation(targetClass: KClass<*>): String? {
-        val routerAnnotation = targetClass.findAnnotation<Destination>() ?: return null
-        return routerAnnotation.router
+    private fun getRouterFromClassAnnotation(targetClass: KClass<*>): Array<String> {
+        val routerAnnotation = targetClass.findAnnotation<Destination>() ?: return emptyArray()
+        return arrayOf(*routerAnnotation.router)
     }
 
     fun getFilledRouterService(router: String, service: Any): Any {
