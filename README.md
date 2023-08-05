@@ -45,8 +45,8 @@ Firstly, you must set up [KSP](https://kotlinlang.org/docs/ksp-overview.html) in
 Then, add KRouter dependency in module.
 ```kts
 // module's build.gradle.kts
-implementation("com.github.0xZhangKe.KRouter:core:0.1.4")
-ksp("com.github.0xZhangKe.KRouter:compiler:0.1.4")
+implementation("com.github.0xZhangKe.KRouter:core:0.1.6")
+ksp("com.github.0xZhangKe.KRouter:compiler:0.1.6")
 ```
 Additionally, add resources dir in source sets.
 ```kts
@@ -71,6 +71,13 @@ This annotation is used to identify which property is used to accept the route.
 So, this property must be a class's variable property or constructor parameter.
 
 The router is passed into this field when the destination object is constructed.
+
+# Release
+## 0.1.6
+- Supported multi router parameter in Destination
+- Supported kotlin increase compiler
+# 0.1.5
+Firstly version.
 
 # License
 ```
