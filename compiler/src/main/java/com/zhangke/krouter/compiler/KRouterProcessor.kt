@@ -88,11 +88,14 @@ class KRouterVisitor(
             }
         if (existsFile != null) {
             val services = existsFile.inputStream().use { ServicesFiles.readServiceFile(it) }
+            services.joinToString(",") { it }.let {
+                environment.logger.warn("services $it")
+            }
             services.add(serviceClassFullName)
             existsFile.outputStream().use { ServicesFiles.writeServiceFile(services, it) }
         } else {
             environment.codeGenerator.createNewFile(
-                dependencies = Dependencies(aggregating = true, serviceClassDeclaration.containingFile!!),
+                dependencies = Dependencies.ALL_FILES,
                 packageName = "",
                 fileName = resourceFileName,
                 extensionName = "",

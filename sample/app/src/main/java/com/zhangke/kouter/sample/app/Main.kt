@@ -5,6 +5,9 @@ import com.zhangke.krouter.sample.core.Screen
 
 fun main() {
     KRouter.route<Screen>("screen/home?name=zhangke")?.content()
+    KRouter.route<Screen>("screen/home/detail")?.content()
+    KRouter.route<Screen>("screen/home/second")?.content()
+    KRouter.route<Screen>("screen/home/landing")?.content()
     KRouter.route<Screen>("krouter://sample.com/screen/home?name=zhangke")?.content()
     KRouter.route<Screen>("screen/home/detail?name=zhangke")?.content()
     KRouter.route<Screen>("screen/profile?name=zhangke")?.content()

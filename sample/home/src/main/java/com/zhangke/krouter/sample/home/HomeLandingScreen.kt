@@ -4,10 +4,10 @@ import com.zhangke.krouter.Destination
 import com.zhangke.krouter.Router
 import com.zhangke.krouter.sample.core.Screen
 
-@Destination("screen/home")
-class HomeScreen(@Router val router: String = "") : Screen {
+@Destination("screen/home/landing")
+class HomeLandingScreen(@Router val router: String = ""): Screen {
 
     override fun content() {
-        println("HomeScreen route is $router")
+        println("HomeLandingScreen: $router")
     }
 }

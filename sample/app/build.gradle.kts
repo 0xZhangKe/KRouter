@@ -12,18 +12,16 @@ java {
 
 kotlin{
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of("8"))
+        implementation = JvmImplementation.VENDOR_SPECIFIC
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
-}
-
-tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }
-
-kotlin {
     sourceSets.main {
         kotlin.srcDir("build/generated/ksp/main/kotlin")
         resources.srcDir("build/generated/ksp/main/resources")
     }
 }
+
+tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }
 
 dependencies {
     implementation(project(":sample:home"))
