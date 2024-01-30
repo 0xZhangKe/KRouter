@@ -5,12 +5,19 @@ plugins {
 }
 
 group = "com.zhangke.krouter"
-version = "0.1.3"
+version = "0.2.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
+
+kotlin{
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of("8"))
+    }
+}
+tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }
 
 dependencies {
     testImplementation("junit:junit:4.+")

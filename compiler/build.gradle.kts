@@ -5,17 +5,23 @@ plugins {
 }
 
 group = "com.zhangke.krouter"
-version = "0.1.3"
+version = "0.2.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+kotlin{
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of("8"))
+    }
+}
+
 dependencies {
     implementation(kotlin("reflect"))
     implementation(project(":core"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.8.0-1.0.9")
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
     implementation("com.squareup:kotlinpoet:1.12.0")
 }
 

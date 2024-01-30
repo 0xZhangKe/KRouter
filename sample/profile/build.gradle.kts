@@ -10,10 +10,17 @@ java {
 }
 
 kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of("8"))
+    }
     sourceSets.main {
         kotlin.srcDir("build/generated/ksp/main/kotlin")
         resources.srcDir("build/generated/ksp/main/resources")
     }
+}
+
+tasks.withType<ProcessResources>{
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 dependencies {
