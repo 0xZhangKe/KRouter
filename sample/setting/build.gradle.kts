@@ -5,7 +5,7 @@ plugins {
 }
 
 tasks.withType<ProcessResources>{
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 

@@ -73,13 +73,17 @@ So, this property must be a class's variable property or constructor parameter.
 The router is passed into this field when the destination object is constructed.
 
 # Release
+
+# 0.2.2
+- fixed increase compiler error
+
 ## 0.2.1
 - upgrade to kotlin 1.9.22
 
 Maybe you need add this code in your module:
 ```kts
 tasks.withType<ProcessResources>{
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 ```
 

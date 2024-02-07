@@ -22,7 +22,7 @@ kotlin {
     }
 }
 
-tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }
+tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
 
 dependencies {
     testImplementation("junit:junit:4.+")

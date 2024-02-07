@@ -21,7 +21,7 @@ kotlin{
     }
 }
 
-tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }
+tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
 
 dependencies {
     implementation(project(":sample:home"))
@@ -33,5 +33,5 @@ dependencies {
 }
 
 tasks.withType<ProcessResources>{
-    duplicatesStrategy = DuplicatesStrategy.INHERIT
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
