@@ -12,16 +12,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-kotlin {
-    target {
-        jvmToolchain(8)
-    }
-    jvmToolchain {
-        implementation = JvmImplementation.VENDOR_SPECIFIC
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
 
 dependencies {

@@ -12,13 +12,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-kotlin{
-    jvmToolchain {
-        implementation = JvmImplementation.VENDOR_SPECIFIC
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 dependencies {
     implementation(kotlin("reflect"))
     implementation(project(":core"))

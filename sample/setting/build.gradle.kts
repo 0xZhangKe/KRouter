@@ -15,10 +15,6 @@ java {
 }
 
 kotlin {
-    jvmToolchain {
-        implementation = JvmImplementation.VENDOR_SPECIFIC
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
     sourceSets.main {
         kotlin.srcDir("build/generated/ksp/main/kotlin")
         resources.srcDir("build/generated/ksp/main/resources")
