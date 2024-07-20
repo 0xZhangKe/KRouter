@@ -1,8 +1,8 @@
-package com.zhangke.krouter
+package com.zhangke.krouter.utils
 
 import java.net.URI
 
-val URI.baseUri: String?
+internal val URI.baseUri: String?
     get() {
         if (path.isNullOrEmpty()) return null
         val baseUrlBuilder = StringBuilder()
