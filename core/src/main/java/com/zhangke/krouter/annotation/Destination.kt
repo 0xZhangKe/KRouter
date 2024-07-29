@@ -1,4 +1,4 @@
-package com.zhangke.krouter
+package com.zhangke.krouter.annotation
 
 import kotlin.reflect.KClass
 
