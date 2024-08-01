@@ -16,7 +16,7 @@ class KRouterProcessorProvider : SymbolProcessorProvider {
         return when (processorType) {
             "inject" -> KRouterInjectProcessor(environment)
             "collect" -> KRouterCollectProcessor(environment)
-            else -> KRouterProcessor(environment)
+            else -> KRouterCollectProcessor(environment)
         }
     }
 }

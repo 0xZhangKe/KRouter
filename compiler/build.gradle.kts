@@ -16,7 +16,8 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation(project(":core"))
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
-    implementation("com.squareup:kotlinpoet:1.12.0")
+    implementation("com.squareup:kotlinpoet:1.18.1")
+    implementation("com.squareup:kotlinpoet-ksp:1.18.1")
 }
 
 publishing {
