@@ -1,7 +1,6 @@
 plugins {
     id("java")
     kotlin("jvm")
-    id("com.google.devtools.ksp")
 }
 
 java {
@@ -23,5 +22,4 @@ tasks.withType<ProcessResources>{
 dependencies {
     implementation(project(":sample:sample-core"))
     implementation(project(":core"))
-    ksp(project(":compiler"))
 }
