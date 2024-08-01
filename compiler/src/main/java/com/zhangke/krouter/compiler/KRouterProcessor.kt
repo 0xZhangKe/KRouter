@@ -1,17 +1,13 @@
 package com.zhangke.krouter.compiler
 
-import com.google.devtools.ksp.processing.*
+import com.google.devtools.ksp.processing.Dependencies
+import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.processing.SymbolProcessor
+import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSVisitorVoid
 import com.zhangke.krouter.annotation.Destination
-
-class KRouterProcessorProvider : SymbolProcessorProvider {
-
-    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        return KRouterProcessor(environment)
-    }
-}
 
 class KRouterProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
 
@@ -94,13 +90,15 @@ class KRouterVisitor(
             services.add(serviceClassFullName)
             existsFile.outputStream().use { ServicesFiles.writeServiceFile(services, it) }
         } else {
-            environment.codeGenerator.createNewFile(
-                dependencies = Dependencies.ALL_FILES,
-                packageName = "",
-                fileName = resourceFileName,
-                extensionName = "",
-            ).use {
-                ServicesFiles.writeServiceFile(setOf(serviceClassFullName), it)
+            runCatching {
+                environment.codeGenerator.createNewFile(
+                    dependencies = Dependencies.ALL_FILES,
+                    packageName = "",
+                    fileName = resourceFileName,
+                    extensionName = "",
+                ).use {
+                    ServicesFiles.writeServiceFile(setOf(serviceClassFullName), it)
+                }
             }
         }
     }

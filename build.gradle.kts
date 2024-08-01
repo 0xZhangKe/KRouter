@@ -9,6 +9,10 @@ buildscript {
     }
 }
 
+ext {
+    set("targetInjectProjectName", "app")
+}
+
 apply(plugin = "krouter-plugin")
 
 allprojects {

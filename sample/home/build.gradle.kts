@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm")
 }
 
-tasks.withType<ProcessResources>{
+tasks.withType<ProcessResources> {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
