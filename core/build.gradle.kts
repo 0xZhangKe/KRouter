@@ -4,8 +4,8 @@ plugins {
     id("maven-publish")
 }
 
-group = "com.zhangke.krouter"
-version = "0.2.1"
+group = libs.versions.krouter.group.get()
+version = libs.versions.krouter.version.get()
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -15,7 +15,7 @@ java {
 tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
 
 dependencies {
-    testImplementation("junit:junit:4.+")
+    testImplementation(libs.junit)
 
     implementation(kotlin("reflect"))
 }

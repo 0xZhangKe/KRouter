@@ -1,4 +1,4 @@
-package com.zhangke.krouter.compiler
+package com.zhangke.krouter.compiler.ext
 
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration

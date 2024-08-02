@@ -1,10 +1,9 @@
 plugins {
     id("java")
     kotlin("jvm")
-    id("com.google.devtools.ksp")
 }
 
-tasks.withType<ProcessResources>{
+tasks.withType<ProcessResources> {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
@@ -20,8 +19,8 @@ kotlin {
         resources.srcDir("build/generated/ksp/main/resources")
     }
 }
+
 dependencies {
     implementation(project(":sample:sample-core"))
     implementation(project(":core"))
-    ksp(project(":compiler"))
 }

@@ -1,0 +1,21 @@
+[versions]
+#kotlin_version = "2.0.0"
+#ksp_version = "2.0.0-1.0.24"
+
+kotlin_version = "1.9.22"
+ksp_version = "1.9.22-1.0.17"
+junit_version = "4.13.2"
+
+krouter_group = "com.zhangke.krouter"
+krouter_version = "0.2.1"
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin_version" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp_version" }
+
+[libraries]
+ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp_version" }
+ksp-gradle = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp_version" }
+junit = { module = "junit:junit", version.ref = "junit_version" }
+
+[bundles]

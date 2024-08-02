@@ -1,8 +1,6 @@
-
 plugins {
     id("java")
     kotlin("jvm")
-    id("com.google.devtools.ksp")
 }
 
 java {
@@ -10,7 +8,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-kotlin{
+kotlin {
     sourceSets.main {
         kotlin.srcDir("build/generated/ksp/main/kotlin")
         resources.srcDir("build/generated/ksp/main/resources")
@@ -25,9 +23,8 @@ dependencies {
     implementation(project(":sample:profile"))
     implementation(project(":sample:sample-core"))
     implementation(project(":core"))
-    ksp(project(":compiler"))
 }
 
-tasks.withType<ProcessResources>{
+tasks.withType<ProcessResources> {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

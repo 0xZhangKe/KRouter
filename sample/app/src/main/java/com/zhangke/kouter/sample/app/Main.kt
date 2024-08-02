@@ -5,29 +5,21 @@ import com.zhangke.krouter.sample.core.Screen
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    repeat(10) {
-        val costTime = measureTimeMillis {
-            KRouter.route<Screen>("screen/home") {
-                with("name", "10")
-                with("list", listOf("1", "2", "3", "${System.currentTimeMillis()}"))
-            }?.content()
-        }
-        println("[$it]costTime: ${costTime}")
+    val initCost = measureTimeMillis {
+        KRouter.init()
     }
+    println("init cost: $initCost")
 
-    repeat(10) {
-        val costTime = measureTimeMillis {
-            KRouter.route<Screen>("screen/home/detail")?.content()
-        }
-        println("[$it]costTime: ${costTime}")
+    val cost = measureTimeMillis {
+        KRouter.route<Screen>("screen/home") {
+            with("name", "10")
+            with("list", listOf("1", "2", "3", "${System.currentTimeMillis()}"))
+        }?.content()
     }
+    println("cost: $cost")
 
-    repeat(10) {
-        val costTime = measureTimeMillis {
-            KRouter.route<Screen>("screen/home/second")?.content()
-        }
-        println("[$it]costTime: ${costTime}")
-    }
+    KRouter.route<Screen>("screen/home/detail")?.content()
+    KRouter.route<Screen>("screen/home/second")?.content()
 
     KRouter.route<Screen>("screen/home/landing")?.content()
     KRouter.route<Screen>("krouter://sample.com/screen/home?name=zhangke")?.content()

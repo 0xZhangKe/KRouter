@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        mavenLocal()
         gradlePluginPortal()
         google()
         mavenCentral()
@@ -8,6 +9,7 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
     }
@@ -15,6 +17,8 @@ dependencyResolutionManagement {
 rootProject.name = "KRoute"
 include(":compiler")
 include(":core")
+include(":plugin")
+
 val isInJitPack = System.getenv()["JITPACK"] == "true"
 if (!isInJitPack) {
     include(":sample:profile")
