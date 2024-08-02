@@ -1,4 +1,4 @@
-package com.zhangke.krouter.compiler
+package com.zhangke.krouter.compiler.ext
 
 internal fun Sequence<Any>.isSingleElement(): Boolean {
     val iterator = iterator()

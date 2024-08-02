@@ -5,6 +5,7 @@ import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.zhangke.krouter.compiler.ext.asClassDeclaration
 
 /**
  * 真正实现路由注入的处理器，继承自KRouterCollectProcessor
