@@ -17,7 +17,7 @@ dependencyResolutionManagement {
 rootProject.name = "KRoute"
 include(":compiler")
 include(":core")
-include("plugin")
+include(":plugin")
 
 val isInJitPack = System.getenv()["JITPACK"] == "true"
 if (!isInJitPack) {

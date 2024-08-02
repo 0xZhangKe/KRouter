@@ -8,19 +8,13 @@ import com.tschuchort.compiletesting.configureKsp
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.Test
 
-private const val COMMON = """
-package com.zhangke.krouter.annotation
-    
-interface Screen
-interface TabScreen
-"""
-
 private const val TestScreen = """
 package com.zhangke.krouter.test
 
 import com.zhangke.krouter.annotation.Destination
-import com.zhangke.krouter.annotation.Screen
-import com.zhangke.krouter.annotation.TabScreen
+
+interface Screen
+interface TabScreen
 
 @Destination("screen/test")
 class TestScreen: Screen
@@ -38,7 +32,6 @@ class KRouterInjectProcessorTest {
     @Test
     fun test() {
         val kotlinSource = listOf(
-            SourceFile.kotlin("Common.kt", COMMON),
             SourceFile.kotlin("Screens.kt", TestScreen),
         )
 
@@ -46,8 +39,6 @@ class KRouterInjectProcessorTest {
             sourceFiles = kotlinSource,
             kspProcessors = listOf(KRouterProcessorProvider())
         )
-
-        println(result.messages)
     }
 
     @OptIn(ExperimentalCompilerApi::class)
@@ -60,9 +51,6 @@ class KRouterInjectProcessorTest {
             inheritClassPath = true
 
             configureKsp(true) {
-                withCompilation = true
-                incremental = true
-
                 processorOptions["kRouterType"] = "inject"
 
                 symbolProcessorProviders.apply {

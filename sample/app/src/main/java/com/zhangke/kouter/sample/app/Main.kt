@@ -2,12 +2,22 @@ package com.zhangke.kouter.sample.app
 
 import com.zhangke.krouter.KRouter
 import com.zhangke.krouter.sample.core.Screen
+import kotlin.system.measureTimeMillis
 
 fun main() {
-    KRouter.route<Screen>("screen/home") {
-        with("name", "10")
-        with("list", listOf("1", "2", "3", "${System.currentTimeMillis()}"))
-    }?.content()
+    val initCost = measureTimeMillis {
+        KRouter.init()
+    }
+    println("init cost: $initCost")
+
+    val cost = measureTimeMillis {
+        KRouter.route<Screen>("screen/home") {
+            with("name", "10")
+            with("list", listOf("1", "2", "3", "${System.currentTimeMillis()}"))
+        }?.content()
+    }
+    println("cost: $cost")
+
     KRouter.route<Screen>("screen/home/detail")?.content()
     KRouter.route<Screen>("screen/home/second")?.content()
 
