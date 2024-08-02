@@ -12,11 +12,8 @@ java {
 }
 
 dependencies {
-    implementation("com.google.devtools.ksp:symbol-processing-gradle-plugin:1.9.22-1.0.17")
-
     implementation(gradleApi())
-    implementation("org.ow2.asm:asm:9.6")
-    implementation("org.ow2.asm:asm-commons:9.6")
+    implementation(libs.ksp.gradle)
     implementation(project(":core"))
 }
 
@@ -29,8 +26,8 @@ gradlePlugin {
     }
 }
 
-group = "com.zhangke.krouter"
-version = "0.2.1"
+group = libs.versions.krouter.group.get()
+version = libs.versions.krouter.version.get()
 
 publishing {
     publications {

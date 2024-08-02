@@ -1,6 +1,7 @@
 package com.zhangke.krouter.compiler
 
 import com.google.devtools.ksp.KspExperimental
+import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -27,6 +28,13 @@ class KRouterInjectProcessor(
         generatedItems.forEachIndexed { index, item ->
             val clazz = kotlin.runCatching { item.asClassDeclaration() }.getOrNull()
             log("[$index]generatedItem: $item $clazz ${clazz?.classKind}")
+
+            clazz?.getDeclaredProperties()?.forEach { property ->
+                val propertyName = property.simpleName.asString()
+                val propertyClazz = property.type.resolve().declaration.asClassDeclaration()
+
+                log("[$index]propertyName: $propertyName")
+            }
         }
 
         return resultList
