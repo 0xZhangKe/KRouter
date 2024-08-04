@@ -12,18 +12,29 @@ private const val TestScreen = """
 package com.zhangke.krouter.test
 
 import com.zhangke.krouter.annotation.Destination
+import com.zhangke.krouter.annotation.Param
 
 interface Screen
 interface TabScreen
 
-@Destination("screen/test")
-class TestScreen: Screen
+@Destination("screen/test", "screen/test2")
+data class TestScreen(
+    val title: String,
+    val name: String = ""
+) : Screen
 
 @Destination("screen/main")
-class MainScreen: Screen
+class MainScreen(
+    val number: Int = 0
+) : Screen
 
 @Destination("screen/settings")
-class SettingsScreen: TabScreen
+class SettingsScreen(
+    @Param(required = true)
+    val index: Int? = 0,
+    val count: Int = 10,
+    val price: Int
+) : TabScreen
 """
 
 @OptIn(ExperimentalCompilerApi::class)

@@ -14,7 +14,7 @@ class RouterPlugin : Plugin<Project> {
     }
 
     override fun apply(target: Project) {
-        println("[apply]: ${target.name}")
+        target.logger.error("[apply]: ${target.name}")
 
         target.afterEvaluate {
             val targetInjectProjectName = target.extensions.extraProperties

@@ -1,51 +1,44 @@
 package com.zhangke.krouter
 
-import kotlin.reflect.KClass
-
-@Suppress("UNCHECKED_CAST")
 object KRouter {
-    private val findServiceByRouter = ZZZKRouterInternalUtil::findServiceByRouter
-    private val getFilledRouterService = ZZZKRouterInternalUtil::getFilledRouterService
-    private val servicesMap: Map<String, List<KClass<*>>> by lazy { getServicesClasses() }
+    private var getRouteMapFunc: ((String) -> (Map<String, Any?>) -> Any?)? = null
 
-    fun init() {
-        println(servicesMap.size)
+    const val PRESET_ROUTER = "__router" // 预设获取路由的KEY
+    const val PRESET_PARAMS = "__params" // 获取路由注入的参数Map, 类型需要注意是Map<String, Any?>
+
+    fun init(getRouteMapFunc: (String) -> (Map<String, Any?>) -> Any?) {
+        this.getRouteMapFunc = getRouteMapFunc
     }
 
-    private fun getServicesClasses(): Map<String, List<KClass<*>>> {
-        val clazz = Class.forName("com.zhangke.krouter.generated.KRouterInjectMap")
-        val register = clazz.declaredConstructors.firstOrNull()
-            ?.also { it.isAccessible = true }
-            ?.newInstance() as? KRouterRegister
-
-        return register?.get() ?: emptyMap()
-    }
-
-    inline fun <reified T : Any> route(
-        router: String,
-        noinline request: RouteRequest.() -> Unit = { }
-    ): T? = route(
-        router = router,
-        className = T::class.java.name,
-        request = request
-    )
-
+    @Suppress("UNCHECKED_CAST")
     fun <T : Any> route(
         router: String,
-        className: String,
-        request: RouteRequest.() -> Unit = { }
+        extraParams: Map<String, Any?> = emptyMap()
     ): T? {
-        // get all services that match T class
-        val serviceList = servicesMap[className] ?: emptyList()
-        val routeRequest = RouteRequest()
-            .apply(request)
-            .also { it.with("router", router) } // TODO remove it when @Router is removed
+        val baseRoute = router.substringBefore('?')
 
-        // get target service by router
-        val targetService = findServiceByRouter(serviceList, router)
-            ?: return null
+        val paramsFromRouter = router
+            .takeIf { it.contains('?') }
+            ?.substringAfterLast('?')
+            ?.split('&')
+            ?.mapNotNull {
+                val list = it.split('=')
+                    .takeIf(List<*>::isNotEmpty)
+                    ?: return@mapNotNull null
 
-        // fill service with request obj
-        return getFilledRouterService(routeRequest, targetService) as T
+                list[0] to (list.getOrNull(1) ?: "")
+            }?.toMap()
+            ?: emptyMap()
+
+        val params = paramsFromRouter + extraParams +
+                mapOf(
+                    PRESET_ROUTER to router,
+                    PRESET_PARAMS to paramsFromRouter + extraParams
+                )
+
+        return getRouteMapFunc
+            ?.invoke(baseRoute)   // 获取路由
+            ?.invoke(params)   // 注入参数
+                as? T
     }
 }
