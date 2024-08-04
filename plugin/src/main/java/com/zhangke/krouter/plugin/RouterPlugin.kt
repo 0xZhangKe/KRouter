@@ -10,9 +10,7 @@ import org.gradle.api.artifacts.ProjectDependency
 class RouterPlugin : Plugin<Project> {
     companion object {
         const val KSP_ID = "com.google.devtools.ksp"
-
-        // TODO 需要想个办法能让这里compiler的版本号和plugin的版本号一致
-        const val COMPILER_NOTATION = "com.zhangke.krouter:compiler:0.2.1"
+        const val COMPILER_NOTATION = "com.zhangke.krouter:compiler:${BuildConfig.pluginVersion}"
     }
 
     override fun apply(target: Project) {

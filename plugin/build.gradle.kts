@@ -3,11 +3,16 @@ plugins {
     kotlin("jvm")
     id("java-gradle-plugin")
     id("maven-publish")
+    alias(libs.plugins.build.config)
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+buildConfig {
+    buildConfigField("pluginVersion", libs.versions.krouter.version.get())
 }
 
 dependencies {
