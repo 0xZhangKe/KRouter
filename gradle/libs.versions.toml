@@ -12,10 +12,12 @@ krouter_version = "0.2.1"
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin_version" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp_version" }
+build-config = { id = "com.github.gmazzo.buildconfig", version = "5.4.0" }
 
 [libraries]
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp_version" }
 ksp-gradle = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp_version" }
+kotlin-gradle-plugin-api = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-api", version.ref = "kotlin_version" }
 junit = { module = "junit:junit", version.ref = "junit_version" }
 
 [bundles]
