@@ -17,13 +17,13 @@ dependencies {
     implementation(project(":core"))
 
     // 用于测试ksp处理器
-    testImplementation("dev.zacsweers.kctfork:ksp:0.5.1")
+    testImplementation("dev.zacsweers.kctfork:ksp:0.4.0")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     testImplementation(libs.junit)
 
     implementation(libs.ksp.api)
-    implementation("com.squareup:kotlinpoet:1.18.1")
-    implementation("com.squareup:kotlinpoet-ksp:1.18.1")
+    implementation("com.squareup:kotlinpoet:1.16.0")
+    implementation("com.squareup:kotlinpoet-ksp:1.16.0")
 }
 
 publishing {

@@ -302,3 +302,12 @@ fun KSType.requireParameterizedClassName() = toClassName().let { typeName ->
         else -> typeName
     }
 }
+
+public fun <T> Collection<T>.joinToCode(
+    separator: CharSequence = ", ",
+    prefix: CharSequence = "",
+    suffix: CharSequence = "",
+    transform: (T) -> CodeBlock,
+): CodeBlock {
+    return map(transform).joinToCode(separator, prefix, suffix)
+}
