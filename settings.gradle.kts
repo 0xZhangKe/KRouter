@@ -3,13 +3,16 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        mavenLocal()
     }
+    includeBuild("gradle-plugin")
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
 rootProject.name = "KRoute"
@@ -23,4 +26,5 @@ if (!isInJitPack) {
     include(":sample:sample-core")
     include(":sample:app")
 }
-include("plugin")
+//include("gradle-plugin")
+include("kotlin-plugin")

@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.jetbrains.kotlin.config.CompilerConfiguration
 
 @OptIn(ExperimentalCompilerApi::class)
-@AutoService(CommandLineProcessor::class)
+//@AutoService(CommandLineProcessor::class)
 class KRouterMappingCommandLineProcessor: CommandLineProcessor {
 
     override val pluginId: String
