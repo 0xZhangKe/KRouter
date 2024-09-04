@@ -23,3 +23,4 @@ if (!isInJitPack) {
     include(":sample:sample-core")
     include(":sample:app")
 }
+include("plugin")
