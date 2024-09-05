@@ -1,6 +1,7 @@
 plugins {
     `java-gradle-plugin`
     kotlin("jvm") version "1.9.22"
+    id("maven-publish")
 }
 
 java {
@@ -16,10 +17,13 @@ allprojects {
     }
 }
 
+group = "com.zhangke.krouter"
+version = "0.0.1"
+
 gradlePlugin {
     plugins {
-        create("krouter.plugin") {
-            id = "com.zhangke.krouter.plugin" // `apply plugin: "krouter.plugin"
+        create("krouter-plugin") {
+            id = "krouter-plugin" // `apply plugin: "krouter.plugin"
             implementationClass = "com.zhangke.krouter.KRouterPlugin" // entry-point class
         }
     }
@@ -27,4 +31,12 @@ gradlePlugin {
 
 dependencies {
     compileOnly(kotlin("gradle-plugin-api"))
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
 }

@@ -13,6 +13,16 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+kotlin {
+    sourceSets {
+        all {
+            languageSettings {
+                optIn("org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi")
+            }
+        }
+    }
+}
+
 dependencies {
     compileOnly(gradleApi())
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
@@ -25,11 +35,8 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "com.zhangke.krouter"
-//            artifactId = "kotlin-plugin"
-            version = "0.1.1"
 
-            from(components["java"])
+            from(components["kotlin"])
         }
     }
 }

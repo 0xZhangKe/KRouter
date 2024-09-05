@@ -3,7 +3,7 @@ plugins {
     id("java")
     kotlin("jvm")
     id("com.google.devtools.ksp")
-    id("com.zhangke.krouter.plugin")
+//    id("com.zhangke.krouter.plugin")
 }
 
 java {
