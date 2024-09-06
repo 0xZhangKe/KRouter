@@ -14,15 +14,9 @@ class KRouterLogger(private val configuration: CompilerConfiguration) {
 
     fun i(message: String) {
         logger.report(CompilerMessageSeverity.INFO, message)
-        logger.report(CompilerMessageSeverity.ERROR, message)
-        logger.report(CompilerMessageSeverity.EXCEPTION, message)
-        logger.report(CompilerMessageSeverity.ERROR, message)
     }
 
     fun w(message: String) {
         logger.report(CompilerMessageSeverity.WARNING, message)
-        logger.report(CompilerMessageSeverity.ERROR, message)
-        logger.report(CompilerMessageSeverity.EXCEPTION, message)
-        logger.report(CompilerMessageSeverity.ERROR, message)
     }
 }

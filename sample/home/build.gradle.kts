@@ -2,6 +2,7 @@ plugins {
     id("java")
     kotlin("jvm")
     id("com.google.devtools.ksp")
+    id("krouter-plugin")
 }
 
 tasks.withType<ProcessResources>{
