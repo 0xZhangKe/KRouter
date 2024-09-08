@@ -15,3 +15,7 @@ fun main() {
     KRouter.route<Screen>("screen/setting")?.content()
     KRouter.route<Screen>("screen/setting/detail")?.content()
 }
+
+class MainScreen{
+
+}

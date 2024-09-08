@@ -9,6 +9,8 @@ import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.expressions.IrBlock
 import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.util.getPackageFragment
+import org.jetbrains.kotlin.ir.util.superClass
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformer
 
 class KRouterMappingIrGenerationExtension(private val logger: KRouterLogger): IrGenerationExtension {
@@ -16,6 +18,7 @@ class KRouterMappingIrGenerationExtension(private val logger: KRouterLogger): Ir
     private val mappingTransformer = KRouterMappingTransformer(logger)
 
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
+        moduleFragment.getPackageFragment()
         val platform = pluginContext.platform
         logger.i("---------generate start----------")
         logger.i("platform: $platform")
@@ -44,7 +47,7 @@ class KRouterMappingIrGenerationExtension(private val logger: KRouterLogger): Ir
 class KRouterMappingTransformer(private val logger: KRouterLogger): IrElementTransformer<IrFunction?>{
 
     override fun visitClass(declaration: IrClass, data: IrFunction?): IrStatement {
-        logger.i("visitClass: $declaration, $data")
+        logger.i("visitClass: name:${declaration.name}, annotations:${declaration.annotations}, superClass:${declaration.superClass}, superTypes:${declaration.superTypes}, data:$data")
         return super.visitClass(declaration, data)
     }
 

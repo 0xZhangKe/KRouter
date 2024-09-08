@@ -1,7 +1,6 @@
 plugins {
     id("java")
     kotlin("jvm")
-    id("krouter-plugin")
 }
 
 java {
