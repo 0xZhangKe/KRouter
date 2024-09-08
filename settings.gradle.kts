@@ -23,3 +23,6 @@ if (!isInJitPack) {
     include(":sample:sample-core")
     include(":sample:app")
 }
+include("collecting-compiler")
+include("reducing-compiler")
+include("common")

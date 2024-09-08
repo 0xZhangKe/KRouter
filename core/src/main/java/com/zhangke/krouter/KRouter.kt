@@ -1,10 +1,16 @@
 package com.zhangke.krouter
 
+import com.zhangke.krouter.internal.KRouterModuleManager
+
 object KRouter {
 
-    inline fun <reified T : Any> route(router: String): T? {
-        val serviceList = ServiceLoaderUtils.findServices<T>()
-        val targetService = ZZZKRouterInternalUtil.findServiceByRouter(serviceList, router) ?: return null
-        return ZZZKRouterInternalUtil.getFilledRouterService(router, targetService) as T
+    private val moduleManager = KRouterModuleManager()
+
+    fun <T> route(router: String): T? {
+        return moduleManager.route(router)
+    }
+
+    fun addRouterModule(module: KRouterModule) {
+        moduleManager.addRouterModule(module)
     }
 }

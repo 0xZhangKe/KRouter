@@ -3,10 +3,10 @@ package com.zhangke.krouter.sample.home
 import com.zhangke.krouter.Destination
 import com.zhangke.krouter.sample.core.Screen
 
-@Destination("screen/profile")
-class ProfileScreen : Screen {
+@Destination("screen/profile/second")
+class ProfileSecondScreen: Screen {
 
     override fun content() {
-        println("ProfileScreen route is null")
+        println("ProfileSecondScreen content")
     }
 }

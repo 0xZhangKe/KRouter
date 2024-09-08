@@ -23,5 +23,5 @@ kotlin {
 dependencies {
     implementation(project(":sample:sample-core"))
     implementation(project(":core"))
-    ksp(project(":compiler"))
+    ksp(project(":collecting-compiler"))
 }
