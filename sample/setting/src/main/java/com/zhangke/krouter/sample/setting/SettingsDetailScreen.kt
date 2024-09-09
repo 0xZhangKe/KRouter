@@ -1,17 +1,17 @@
 package com.zhangke.krouter.sample.setting
 
 import com.zhangke.krouter.Destination
-import com.zhangke.krouter.KRouterParams
+import com.zhangke.krouter.RouteParam
 import com.zhangke.krouter.sample.core.Screen
 
 @Destination("screen/setting/detail")
 class SettingsDetailScreen(
-    @KRouterParams("index") val index: Int,
-    @KRouterParams("title") val title: String,
-    @KRouterParams("id") val settingId: Long,
-    @KRouterParams("showTitle") val showTitle: Boolean,
-    @KRouterParams("ratio") val ratio: Float = 1.0F,
-    @KRouterParams("size") val size: Double?,
+    @RouteParam("index") val index: Int,
+    @RouteParam("title") val title: String,
+    @RouteParam("id") val settingId: Long,
+    @RouteParam("showTitle") val showTitle: Boolean,
+    @RouteParam("ratio") val ratio: Float = 1.0F,
+    @RouteParam("size") val size: Double?,
     val extra: Any? = null,
 ) : Screen {
 

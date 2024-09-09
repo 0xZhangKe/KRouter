@@ -1,7 +1,6 @@
 package com.zhangke.kouter.sample.app
 
 import com.zhangke.krouter.KRouter
-import com.zhangke.krouter.KRouterParams
 import com.zhangke.krouter.sample.core.Screen
 
 fun main() {
@@ -9,7 +8,7 @@ fun main() {
     KRouter.route<Screen>("screen/main?name=zhangke&id=123&size=12")?.content()
     KRouter.route<Screen>("screen/home/landing?url=mocked_url&showTitle=false&index=3")?.content()
 
-    KRouter.route<Screen>("screen/home?name=zhangke")?.content()
+    KRouter.route<Screen>("screen/home?name=zhangke&showTitle=false")?.content()
     KRouter.route<Screen>("screen/home/detail?id=123")?.content()
     KRouter.route<Screen>("screen/home/second")?.content()
     KRouter.route<Screen>("screen/home/landing")?.content()

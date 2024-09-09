@@ -3,17 +3,19 @@ package com.zhangke.krouter.compiler
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.symbol.Nullability
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ksp.writeTo
 import com.zhangke.krouter.Destination
 import com.zhangke.krouter.KRouterModule
-import com.zhangke.krouter.KRouterParams
-import com.zhangke.krouter.internal.KRouterUri
+import com.zhangke.krouter.RouteParam
 import com.zhangke.krouter.common.ReflectionContract
 import com.zhangke.krouter.common.utils.findAnnotationValue
+import com.zhangke.krouter.common.utils.getRouterParamsNameValue
 import com.zhangke.krouter.common.utils.requireAnnotation
+import com.zhangke.krouter.internal.KRouterUri
 
 class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment) {
 
@@ -28,12 +30,12 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
             .primaryConstructor(FunSpec.constructorBuilder().build())
             .addSuperinterface(KRouterModule::class)
             .addFunction(buildRouteFunction(destinations))
-            .addFunction(buildMissingParamErrorFunction())
             .build()
         val fileSpec = FileSpec.builder(
             packageName = ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME,
             fileName = className,
         ).addType(moduleClass)
+            .indent("    ")
             .build()
         fileSpec.writeTo(
             codeGenerator = environment.codeGenerator,
@@ -49,18 +51,22 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
         if (destinations.isEmpty()) {
             funSpecBuilder.addStatement("return null")
         } else {
-            funSpecBuilder.addStatement("val routerUri = ${KRouterUri::class.qualifiedName}.create(uri)")
-                .addStatement("return when(routerUri.baseUrl){")
+            val codeBlockBuilder = CodeBlock.builder()
+            codeBlockBuilder.addStatement("val routerUri = ${KRouterUri::class.qualifiedName}.create(uri)")
+            codeBlockBuilder.addStatement("return when (routerUri.baseUrl) {")
+            codeBlockBuilder.indent()
             destinations.forEach {
-                funSpecBuilder.addStatement(buildRoutingStatement(it))
+                buildRoutingStatement(codeBlockBuilder, it)
             }
-            funSpecBuilder.addStatement("else -> null")
-            funSpecBuilder.addStatement("}")
+            codeBlockBuilder.addStatement("else -> null")
+            codeBlockBuilder.unindent()
+            codeBlockBuilder.addStatement("}")
+            funSpecBuilder.addCode(codeBlockBuilder.build())
         }
         return funSpecBuilder.build()
     }
 
-    private fun buildRoutingStatement(destination: KSClassDeclaration): String {
+    private fun buildRoutingStatement(codeBlockBuilder: CodeBlock.Builder, destination: KSClassDeclaration) {
         val routerAnnotation = destination.requireAnnotation<Destination>()
         val route = routerAnnotation.findAnnotationValue("route")
         if (route.isNullOrEmpty()) {
@@ -69,25 +75,58 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
             throw IllegalArgumentException(errorMessage)
         }
         val classFullName = destination.qualifiedName?.asString()!!
-        val statementBuilder = StringBuilder()
-        statementBuilder.append("\"$route\" -> {\n")
+        codeBlockBuilder.add("\"$route\" -> {\n")
         val primaryConstructor = destination.primaryConstructor
         val parameters = primaryConstructor?.parameters
-        if (primaryConstructor == null || parameters?.isEmpty() == true) {
-            statementBuilder.append("$classFullName()")
+        if (primaryConstructor == null || parameters.isNullOrEmpty()) {
+            codeBlockBuilder.indent()
+            codeBlockBuilder.add("$classFullName()")
+            codeBlockBuilder.unindent()
         } else {
-
-            statementBuilder.append("$classFullName(\n")
-            with(statementBuilder) {
+            codeBlockBuilder.indent()
+            codeBlockBuilder.add("$classFullName(\n")
+            with(codeBlockBuilder) {
                 buildConstructorParameters(classFullName, parameters!!)
             }
-            statementBuilder.append("\n)")
+            codeBlockBuilder.add(")")
+            codeBlockBuilder.unindent()
         }
-        statementBuilder.append("\n}")
-        return statementBuilder.toString()
+        val processingProperties = destination.getAllProperties()
+            .filter { it.hasBackingField }
+            .mapNotNull {
+                val paramName = it.getRouterParamsNameValue()
+                if (paramName.isNullOrEmpty()) {
+                    null
+                } else {
+                    paramName to it
+                }
+            }.toList()
+        if (processingProperties.isNotEmpty()) {
+            codeBlockBuilder.add(".apply {\n")
+            codeBlockBuilder.indent()
+            processingProperties.forEach { (paramName, property) ->
+                codeBlockBuilder.indent()
+                with(codeBlockBuilder) {
+                    buildAssignmentStatement(
+                        paramName = property.simpleName.asString(),
+                        type = property.type,
+                        routerParamsName = paramName,
+                        appendComma = false,
+                    )
+                }
+                codeBlockBuilder.unindent()
+            }
+            codeBlockBuilder.add("}")
+            codeBlockBuilder.unindent()
+        }
+        codeBlockBuilder.add("\n}\n\n")
     }
 
-    private fun StringBuilder.buildConstructorParameters(classFullName: String, parameters: List<KSValueParameter>) {
+    private fun CodeBlock.Builder.buildConstructorParameters(
+        classFullName: String,
+        parameters: List<KSValueParameter>
+    ) {
+        this.indent()
         parameters.forEach { parameter ->
             val paramsRouteName = parameter.routerParamName()
             if (paramsRouteName.isNullOrEmpty()) {
@@ -97,48 +136,38 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
                     throw IllegalArgumentException(errorMessage)
                 }
             } else {
-                val type = parameter.type.resolve().declaration.qualifiedName?.asString()!!
-                val paramName = parameter.name!!.asString()
-                this.append("$paramName = routerUri.queries[\"$paramsRouteName\"]")
-                when (type) {
-                    "kotlin.Boolean" -> this.append("?.toBoolean()")
-                    "kotlin.Short" -> this.append("?.toShort()")
-                    "kotlin.Int" -> this.append("?.toInt()")
-                    "kotlin.Long" -> this.append("?.toLong()")
-                    "kotlin.Float" -> this.append("?.toFloat()")
-                    "kotlin.Double" -> this.append("?.toDouble()")
-                    "kotlin.String" -> {}
-                    else -> {
-                        val errorMessage = "Unsupported type: $type"
-                        environment.logger.error(errorMessage)
-                        throw IllegalArgumentException(errorMessage)
-                    }
-                }
-                if (parameter.type.resolve().nullability == Nullability.NOT_NULL) {
-                    this.append(" ?: throw missingParamError(\"$paramName\", uri)")
-                }
-                this.append(',')
-                this.appendLine()
+                buildAssignmentStatement(
+                    paramName = parameter.name!!.asString(),
+                    type = parameter.type,
+                    routerParamsName = paramsRouteName,
+                    appendComma = true,
+                )
             }
+        }
+        this.unindent()
+    }
+
+    private fun CodeBlock.Builder.buildAssignmentStatement(
+        paramName: String,
+        type: KSTypeReference,
+        routerParamsName: String,
+        appendComma: Boolean,
+    ) {
+        val ksType = type.resolve()
+        val suffix = if (appendComma) "," else ""
+        if (ksType.nullability == Nullability.NOT_NULL) {
+            addStatement("$paramName = routerUri.requireQuery(\"$routerParamsName\")$suffix")
+        } else {
+            addStatement("$paramName = routerUri.getQuery(\"$routerParamsName\")$suffix")
         }
     }
 
     private fun KSValueParameter.routerParamName(): String? {
-        val routerParamsName = KRouterParams::class.simpleName
+        val routerParamsName = RouteParam::class.simpleName
         return this.annotations
             .firstOrNull { it.shortName.asString() == routerParamsName }
             ?.arguments
             ?.first { it.name?.asString() == "name" }
             ?.value as? String
-    }
-
-    private fun buildMissingParamErrorFunction(): FunSpec {
-        return FunSpec.builder("missingParamError")
-            .addParameter("paramName", String::class)
-            .addParameter("uri", String::class)
-            .returns(Exception::class)
-            .addModifiers(KModifier.PRIVATE)
-            .addStatement("return IllegalArgumentException(\"Missing parameter \$paramName in \$uri\")")
-            .build()
     }
 }

@@ -1,15 +1,15 @@
 package com.zhangke.kouter.sample.app
 
 import com.zhangke.krouter.Destination
-import com.zhangke.krouter.KRouterParams
+import com.zhangke.krouter.RouteParam
 import com.zhangke.krouter.sample.core.Screen
 
 @Destination("screen/home/landing")
 class LandingScreen(
-    @KRouterParams("url") val url: String,
-    @KRouterParams("showTitle") val showTitle: Boolean,
-    @KRouterParams("index") val index: Short,
-    @KRouterParams("title") val title: String?,
+    @RouteParam("url") val url: String,
+    @RouteParam("showTitle") val showTitle: Boolean,
+    @RouteParam("index") val index: Short,
+    @RouteParam("title") val title: String?,
 ) : Screen {
 
     override fun content() {
