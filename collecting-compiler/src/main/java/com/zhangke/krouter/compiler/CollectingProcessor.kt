@@ -7,6 +7,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.zhangke.krouter.Destination
+import com.zhangke.krouter.common.KRouterModuleGenerator
 
 class CollectingProcessorProvider : SymbolProcessorProvider {
 

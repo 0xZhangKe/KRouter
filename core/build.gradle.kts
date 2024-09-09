@@ -1,30 +1,26 @@
 plugins {
-    id("java")
-    kotlin("jvm")
+    id("org.jetbrains.kotlin.multiplatform")
     id("maven-publish")
 }
 
-group = "com.zhangke.krouter"
-version = "0.2.1"
+group = libs.versions.krouter.group
+version = libs.versions.krouter.version
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
-
-dependencies {
-    testImplementation("junit:junit:4.+")
-
-    implementation(kotlin("reflect"))
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifactId = "core"
-            from(components["java"])
+kotlin {
+    jvm()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+    sourceSets.apply {
+        targets.configureEach {
+            compilations.configureEach {
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        // https://youtrack.jetbrains.com/issue/KT-61573
+                        freeCompilerArgs.add("-Xexpect-actual-classes")
+                    }
+                }
+            }
         }
     }
 }

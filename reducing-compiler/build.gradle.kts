@@ -4,8 +4,8 @@ plugins {
     id("maven-publish")
 }
 
-group = "com.zhangke.krouter"
-version = "0.2.1"
+group = libs.versions.krouter.group
+version = libs.versions.krouter.version
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -15,10 +15,10 @@ java {
 dependencies {
     implementation(kotlin("reflect"))
     implementation(project(":core"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
-    implementation("com.squareup:kotlinpoet:1.16.0")
-    implementation("com.squareup:kotlinpoet-ksp:1.16.0")
     implementation(project(":common"))
+    implementation(libs.ksp.api)
+    implementation(libs.kotlin.poet)
+    implementation(libs.kotlin.poet.ksp)
 }
 
 publishing {

@@ -12,6 +12,6 @@ class MainScreen(
 ): Screen {
 
     override fun content() {
-        super.content()
+        println("MainScreen content: id=$id, name=$name, size=$size")
     }
 }

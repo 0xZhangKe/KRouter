@@ -14,7 +14,8 @@ java {
 
 dependencies {
     implementation(kotlin("reflect"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
-    implementation("com.squareup:kotlinpoet:1.12.0")
     implementation(project(":core"))
+    implementation(libs.ksp.api)
+    implementation(libs.kotlin.poet)
+    implementation(libs.kotlin.poet.ksp)
 }

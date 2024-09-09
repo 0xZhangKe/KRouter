@@ -26,7 +26,6 @@ dependencies {
     implementation(project(":sample:sample-core"))
     implementation(project(":core"))
     ksp(project(":reducing-compiler"))
-    ksp(project(":collecting-compiler"))
 }
 
 tasks.withType<ProcessResources>{

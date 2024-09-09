@@ -8,6 +8,8 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.zhangke.krouter.Destination
+import com.zhangke.krouter.common.KRouterModuleGenerator
 import com.zhangke.krouter.common.ReflectionContract
 
 
@@ -20,6 +22,9 @@ class ReducingProcessorProvider : SymbolProcessorProvider {
 
 class ReducingProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
 
+    private val reduceGenerator = KRouterReduceGenerator(environment)
+    private val moduleGenerator = KRouterModuleGenerator(environment)
+
     @OptIn(KspExperimental::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val autoModelClass = ReflectionContract.AUTO_REDUCE_MODULE_CLASS_NAME
@@ -28,8 +33,14 @@ class ReducingProcessor(private val environment: SymbolProcessorEnvironment) : S
             .mapNotNull { it as? KSClassDeclaration }
             .filter { ReflectionContract.isCollectionClass(it.qualifiedName?.asString().orEmpty()) }
             .toList()
-        val generator = KRouterReduceGenerator(environment)
-        generator.generate(moduleList)
+
+        val destinations = resolver.getSymbolsWithAnnotation(Destination::class.qualifiedName!!)
+            .map { it as KSClassDeclaration }
+            .toList()
+
+        val thisModuleClassName = moduleGenerator.generateModule(destinations)
+
+        reduceGenerator.generate(moduleList, thisModuleClassName)
         return emptyList()
     }
 }

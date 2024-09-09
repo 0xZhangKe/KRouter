@@ -1,0 +1,21 @@
+[versions]
+kotlin = "1.9.22"
+ksp = "1.9.22-1.0.17"
+
+krouter_group = "com.zhangke.krouter"
+krouter_version = "1.0.1"
+
+kotlinPoetVersion = "1.16.0"
+
+[plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+build-config = { id = "com.github.gmazzo.buildconfig", version = "5.4.0" }
+
+[libraries]
+ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+ksp-gradle = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
+kotlin-gradle-plugin-api = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-api", version.ref = "kotlin" }
+kotlin-poet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoetVersion" }
+kotlin-poet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinPoetVersion" }

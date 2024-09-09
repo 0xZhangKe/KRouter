@@ -11,13 +11,13 @@ import com.zhangke.krouter.common.ReflectionContract
 
 class KRouterReduceGenerator(private val environment: SymbolProcessorEnvironment) {
 
-    fun generate(list: List<KSClassDeclaration>) {
+    fun generate(list: List<KSClassDeclaration>, thisModuleClassName: String?) {
         if (list.isEmpty()) return
         val className = ReflectionContract.REDUCING_TARGET_CLASS_NAME
         val moduleClass = TypeSpec.classBuilder(className)
             .primaryConstructor(FunSpec.constructorBuilder().build())
             .addSuperinterface(KRouterModule::class)
-            .addProperty(buildModuleList(list))
+            .addProperty(buildModuleList(list, thisModuleClassName))
             .addFunction(buildRouteFunction())
             .build()
         val fileSpec = FileSpec.builder(
@@ -31,15 +31,16 @@ class KRouterReduceGenerator(private val environment: SymbolProcessorEnvironment
         )
     }
 
-    private fun buildModuleList(list: List<KSClassDeclaration>): PropertySpec {
-        val moduleListPropertyName = "moduleList"
+    private fun buildModuleList(list: List<KSClassDeclaration>, thisModuleClassName: String?): PropertySpec {
         val propertyBuilder = PropertySpec.builder(
-            name = moduleListPropertyName,
+            name = "moduleList",
             type = List::class.asTypeName().parameterizedBy(KRouterModule::class.asTypeName()),
             modifiers = setOf(KModifier.PRIVATE),
         )
+        val thisModuleQualifiedName = ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME + "." + thisModuleClassName
+        val moduleList = list.map { it.qualifiedName!!.asString() } + thisModuleQualifiedName
         propertyBuilder.initializer(
-            "listOf<KRouterModule>(\n${list.joinToString(",\n") { "    ${it.qualifiedName!!.asString()}()" }}\n)"
+            "listOf<KRouterModule>(\n${moduleList.joinToString(",\n") { "    $it()" }}\n)"
         )
         return propertyBuilder.build()
     }
