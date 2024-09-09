@@ -3,7 +3,7 @@ kotlin = "1.9.22"
 ksp = "1.9.22-1.0.17"
 
 krouter_group = "com.zhangke.krouter"
-krouter_version = "1.0.1"
+krouter_version = "1.0.11"
 
 kotlinPoetVersion = "1.16.0"
 

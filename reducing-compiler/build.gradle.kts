@@ -15,7 +15,7 @@ java {
 dependencies {
     implementation(kotlin("reflect"))
     implementation(project(":core"))
-    implementation(project(":common"))
+    api(project(":common"))
     implementation(libs.ksp.api)
     implementation(libs.kotlin.poet)
     implementation(libs.kotlin.poet.ksp)

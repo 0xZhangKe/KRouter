@@ -16,9 +16,9 @@ rootProject.name = "KRoute"
 include(":core")
 include("collecting-compiler")
 include("reducing-compiler")
+include("common")
 val isInJitPack = System.getenv()["JITPACK"] == "true"
 if (!isInJitPack) {
-    include("common")
     include(":sample:profile")
     include(":sample:home")
     include(":sample:setting")

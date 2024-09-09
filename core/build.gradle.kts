@@ -24,3 +24,11 @@ kotlin {
         }
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            artifactId = "core"
+        }
+    }
+}
