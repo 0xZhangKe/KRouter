@@ -1,10 +1,6 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-    id("maven-publish")
 }
-
-group = libs.versions.krouter.group
-version = libs.versions.krouter.version
 
 kotlin {
     jvm()
@@ -25,10 +21,3 @@ kotlin {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifactId = "core"
-        }
-    }
-}

@@ -1,11 +1,7 @@
 plugins {
     id("java")
     kotlin("jvm")
-    id("maven-publish")
 }
-
-group = libs.versions.krouter.group
-version = libs.versions.krouter.version
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -19,13 +15,4 @@ dependencies {
     implementation(libs.ksp.api)
     implementation(libs.kotlin.poet)
     implementation(libs.kotlin.poet.ksp)
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifactId = "collecting-compiler"
-            from(components["java"])
-        }
-    }
 }

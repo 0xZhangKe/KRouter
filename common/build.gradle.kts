@@ -1,11 +1,7 @@
 plugins {
     id("java")
     kotlin("jvm")
-    id("maven-publish")
 }
-
-group = "com.zhangke.krouter"
-version = "0.2.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
