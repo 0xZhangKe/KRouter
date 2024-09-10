@@ -6,6 +6,9 @@ kotlinPoetVersion = "1.16.0"
 
 publish = "0.29.0"
 
+krouter-group = "com.zhangke.krouter"
+krouter-version = "0.0.1"
+
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
