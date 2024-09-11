@@ -31,15 +31,22 @@ kotlin {
 }
 
 mavenPublishing {
-    coordinates(libs.versions.krouter.group.get(), "core", libs.versions.krouter.version.get())
+    coordinates(libs.versions.krouter.group.get(), "krouter-core", libs.versions.krouter.version.get())
 
-    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.S01)
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
 
     signAllPublications()
     pom {
         name.set("KRouter")
         description.set("Lightweight Kotlin router.")
         url.set("https://github.com/0xZhangKe/KRouter")
+        licenses {
+            license {
+                name.set("Apache 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                distribution.set("repo")
+            }
+        }
         developers {
             developer {
                 id.set("zhangke")
