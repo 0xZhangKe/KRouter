@@ -4,7 +4,7 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.zhangke.krouter.RouteParam
+import com.zhangke.krouter.annotation.RouteParam
 
 inline fun <reified T> KSClassDeclaration.requireAnnotation(): KSAnnotation {
     return annotations.first {

@@ -22,6 +22,7 @@ tasks.withType<ProcessResources>{
 
 dependencies {
     implementation(project(":sample:sample-core"))
-    implementation(project(":core"))
-    ksp(project(":collecting-compiler"))
+    implementation(project(":krouter-runtime"))
+    implementation(project(":krouter-annotation"))
+    ksp(project(":krouter-collecting-compiler"))
 }

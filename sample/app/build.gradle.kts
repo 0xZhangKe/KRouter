@@ -24,8 +24,9 @@ dependencies {
     implementation(project(":sample:setting"))
     implementation(project(":sample:profile"))
     implementation(project(":sample:sample-core"))
-    implementation(project(":core"))
-    ksp(project(":reducing-compiler"))
+    implementation(project(":krouter-runtime"))
+    implementation(project(":krouter-annotation"))
+    ksp(project(":krouter-reducing-compiler"))
 }
 
 tasks.withType<ProcessResources>{

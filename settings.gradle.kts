@@ -5,6 +5,8 @@ pluginManagement {
         mavenCentral()
     }
 }
+
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -13,15 +15,13 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "KRoute"
-include(":core")
-include("collecting-compiler")
-include("reducing-compiler")
-include("common")
-val isInJitPack = System.getenv()["JITPACK"] == "true"
-if (!isInJitPack) {
-    include(":sample:profile")
-    include(":sample:home")
-    include(":sample:setting")
-    include(":sample:sample-core")
-    include(":sample:app")
-}
+include(":krouter-runtime")
+include(":krouter-reducing-compiler")
+include(":krouter-collecting-compiler")
+include(":krouter-annotation")
+include(":common")
+include(":sample:profile")
+include(":sample:home")
+include(":sample:setting")
+include(":sample:sample-core")
+include(":sample:app")

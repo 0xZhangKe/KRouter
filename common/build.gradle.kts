@@ -1,6 +1,8 @@
 plugins {
     id("java")
     kotlin("jvm")
+    alias(libs.plugins.dokka)
+    id("com.vanniktech.maven.publish")
 }
 
 java {
@@ -10,7 +12,8 @@ java {
 
 dependencies {
     implementation(kotlin("reflect"))
-    api(project(":core"))
+    api(project(":krouter-annotation"))
+    api(project(":krouter-runtime"))
     implementation(libs.ksp.api)
     implementation(libs.kotlin.poet)
     implementation(libs.kotlin.poet.ksp)
