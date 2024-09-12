@@ -27,18 +27,25 @@ class KRouterReduceGenerator(private val environment: SymbolProcessorEnvironment
             .build()
         fileSpec.writeTo(
             codeGenerator = environment.codeGenerator,
-            dependencies = Dependencies(true),
+            dependencies = Dependencies.ALL_FILES,
         )
     }
 
-    private fun buildModuleList(list: List<KSClassDeclaration>, thisModuleClassName: String?): PropertySpec {
+    private fun buildModuleList(
+        list: List<KSClassDeclaration>,
+        thisModuleClassName: String?
+    ): PropertySpec {
         val propertyBuilder = PropertySpec.builder(
             name = "moduleList",
             type = List::class.asTypeName().parameterizedBy(KRouterModule::class.asTypeName()),
             modifiers = setOf(KModifier.PRIVATE),
         )
-        val thisModuleQualifiedName = ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME + "." + thisModuleClassName
-        val moduleList = list.map { it.qualifiedName!!.asString() } + thisModuleQualifiedName
+        val moduleList = list.map { it.qualifiedName!!.asString() }.toMutableList()
+        if (thisModuleClassName != null) {
+            val thisModuleQualifiedName =
+                ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME + "." + thisModuleClassName
+            moduleList += thisModuleQualifiedName
+        }
         propertyBuilder.initializer(
             "listOf<KRouterModule>(\n${moduleList.joinToString(",\n") { "    $it()" }}\n)"
         )

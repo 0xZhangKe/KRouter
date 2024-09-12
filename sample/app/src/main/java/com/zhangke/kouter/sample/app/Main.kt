@@ -14,7 +14,7 @@ fun main() {
     KRouter.route<Screen>("screen/home/landing")?.content()
     KRouter.route<Screen>("krouter://sample.com/screen/home?name=zhangke")?.content()
     KRouter.route<Screen>("screen/profile?name=zhangke")?.content()
-    KRouter.route<Screen>("screen/profile/detail?name=zhangke")?.content()
+    KRouter.route<Screen>("demo://router/screen/profile/detail?userId=1&userName=ke")?.content()
     KRouter.route<Screen>("screen/profile/second")?.content()
     KRouter.route<Screen>("screen/setting")?.content()
     KRouter.route<Screen>("screen/setting/detail?index=1&title=title&id=33&showTitle=false&ratio=1")?.content()

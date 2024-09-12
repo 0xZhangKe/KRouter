@@ -45,7 +45,7 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
             .build()
         fileSpec.writeTo(
             codeGenerator = environment.codeGenerator,
-            dependencies = Dependencies(true),
+            dependencies = Dependencies.ALL_FILES,
         )
         return className
     }

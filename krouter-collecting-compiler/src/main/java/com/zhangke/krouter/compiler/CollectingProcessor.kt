@@ -17,7 +17,7 @@ class CollectingProcessorProvider : SymbolProcessorProvider {
 }
 
 class CollectingProcessor(
-    environment: SymbolProcessorEnvironment
+    private val environment: SymbolProcessorEnvironment
 ) : SymbolProcessor {
 
     private val moduleGenerator = KRouterModuleGenerator(environment)
