@@ -14,7 +14,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "KRoute"
+rootProject.name = "KRouter"
 include(":krouter-runtime")
 include(":krouter-reducing-compiler")
 include(":krouter-collecting-compiler")

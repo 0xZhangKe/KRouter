@@ -3,14 +3,21 @@ package com.zhangke.krouter.common
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.symbol.Nullability
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
-import com.zhangke.krouter.annotation.Destination
 import com.zhangke.krouter.KRouterModule
+import com.zhangke.krouter.annotation.Destination
 import com.zhangke.krouter.annotation.RouteParam
+import com.zhangke.krouter.annotation.RouteUri
 import com.zhangke.krouter.common.utils.findAnnotationValue
 import com.zhangke.krouter.common.utils.getRouterParamsNameValue
 import com.zhangke.krouter.common.utils.requireAnnotation
@@ -66,12 +73,16 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
         return funSpecBuilder.build()
     }
 
-    private fun buildRoutingStatement(codeBlockBuilder: CodeBlock.Builder, destination: KSClassDeclaration) {
+    private fun buildRoutingStatement(
+        codeBlockBuilder: CodeBlock.Builder,
+        destination: KSClassDeclaration
+    ) {
         val route = destination.requireAnnotation<Destination>()
             .findAnnotationValue("route")
             ?.removeSuffix("/")
         if (route.isNullOrEmpty()) {
-            val errorMessage = "${destination.qualifiedName!!.asString()}: route is required in @Destination annotation"
+            val errorMessage =
+                "${destination.qualifiedName!!.asString()}: route is required in @Destination annotation"
             environment.logger.error(errorMessage)
             throw IllegalArgumentException(errorMessage)
         }
@@ -108,12 +119,16 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
             processingProperties.forEach { (paramName, property) ->
                 codeBlockBuilder.indent()
                 with(codeBlockBuilder) {
-                    buildAssignmentStatement(
-                        paramName = property.simpleName.asString(),
-                        type = property.type,
-                        routerParamsName = paramName,
-                        appendComma = false,
-                    )
+                    if (property.isRouterUriField()) {
+                        addStatement("\n${property.simpleName.asString()} = uri")
+                    } else {
+                        buildAssignmentStatement(
+                            paramName = property.simpleName.asString(),
+                            type = property.type,
+                            routerParamsName = paramName,
+                            appendComma = false,
+                        )
+                    }
                 }
                 codeBlockBuilder.unindent()
             }
@@ -130,9 +145,12 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
         this.indent()
         parameters.forEach { parameter ->
             val paramsRouteName = parameter.routerParamName()
-            if (paramsRouteName.isNullOrEmpty()) {
+            if (parameter.isRouterUriField()) {
+                addStatement("\n${parameter.name!!.asString()} = uri,")
+            } else if (paramsRouteName.isNullOrEmpty()) {
                 if (!parameter.hasDefault) {
-                    val errorMessage = "$classFullName#${parameter.name?.asString()} must set a default value!"
+                    val errorMessage =
+                        "$classFullName#${parameter.name?.asString()} must set a default value!"
                     environment.logger.error(errorMessage)
                     throw IllegalArgumentException(errorMessage)
                 }
@@ -170,5 +188,15 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
             ?.arguments
             ?.first { it.name?.asString() == "name" }
             ?.value as? String
+    }
+
+    private fun KSValueParameter.isRouterUriField(): Boolean {
+        val routerUriName = RouteUri::class.simpleName
+        return this.annotations.any { it.shortName.asString() == routerUriName }
+    }
+
+    private fun KSPropertyDeclaration.isRouterUriField(): Boolean {
+        val routerUriName = RouteUri::class.simpleName
+        return this.annotations.any { it.shortName.asString() == routerUriName }
     }
 }
