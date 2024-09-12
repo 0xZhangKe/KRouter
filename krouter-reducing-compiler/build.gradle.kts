@@ -15,7 +15,7 @@ java {
 dependencies {
     implementation(kotlin("reflect"))
     implementation(project(":krouter-runtime"))
-    api(project(":common"))
+    api(project(":krouter-compiler-framework"))
     implementation(libs.ksp.api)
     implementation(libs.kotlin.poet)
     implementation(libs.kotlin.poet.ksp)

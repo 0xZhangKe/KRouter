@@ -1,3 +1,5 @@
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
+
 plugins {
     id("java")
     kotlin("jvm")
@@ -17,4 +19,11 @@ dependencies {
     implementation(libs.ksp.api)
     implementation(libs.kotlin.poet)
     implementation(libs.kotlin.poet.ksp)
+}
+
+mavenPublishing {
+    @Suppress("UNCHECKED_CAST")
+    val mavenPublicationSetup =
+        rootProject.extra["buildKRouterPom"] as (MavenPublishBaseExtension, String) -> Unit
+    mavenPublicationSetup(this, "krouter-compiler-framework")
 }
