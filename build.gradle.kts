@@ -58,13 +58,13 @@ fun setupKRouterMavenPublication(extension: MavenPublishBaseExtension, artifactN
 
 object ProjectVersion {
     // incompatible API changes
-    private const val MAJOR = "0"
+    private const val MAJOR = "1"
 
     // functionality in a backwards compatible manner
-    private const val MONIR = "9"
+    private const val MONIR = "0"
 
     // backwards compatible bug fixes
-    private const val PATH = "96"
+    private const val PATH = "0"
     const val VERSION = "$MAJOR.$MONIR.$PATH"
 }
 
