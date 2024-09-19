@@ -117,9 +117,9 @@ Additionally, there is an annotation module and a runtime module:
 
 ```kotlin
 // For modules that only need to use annotations
-ksp("io.github.0xzhangke:krouter-runtime:$latest_version")
+implementation("io.github.0xzhangke:krouter-runtime:$latest_version")
 // For modules that need routing capabilities
-ksp("io.github.0xzhangke:krouter-annotation:$latest_version")
+implementation("io.github.0xzhangke:krouter-annotation:$latest_version")
 ```
 
 ## Implementation Details
