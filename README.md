@@ -1,4 +1,4 @@
-![](https://img.shields.io/maven-central/v/io.github.0xzhangke/krouter-runtime)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.0xzhangke/krouter-runtime)](https://central.sonatype.com/artifact/io.github.0xzhangke/krouter-runtime)
 
 # KRouter2
 
