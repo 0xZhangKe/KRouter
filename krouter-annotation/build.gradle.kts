@@ -17,7 +17,7 @@ android {
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
+    androidTarget()
     jvm()
     iosX64()
     iosArm64()

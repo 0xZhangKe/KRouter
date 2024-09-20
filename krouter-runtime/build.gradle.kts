@@ -18,6 +18,7 @@ android {
 }
 
 kotlin {
+    androidTarget()
     jvm()
     iosX64()
     iosArm64()
