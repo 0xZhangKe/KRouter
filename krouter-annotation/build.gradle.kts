@@ -9,7 +9,9 @@ plugins {
 
 android {
     namespace = "com.zhangke.krouter.annotation"
+    compileSdk = 34
     defaultConfig {
+        minSdk = 21
         consumerProguardFiles("consumer-rules.pro")
     }
 }
