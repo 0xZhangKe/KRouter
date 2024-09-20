@@ -3,8 +3,16 @@ import org.jetbrains.kotlin.config.LanguageFeature
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.library")
     id("com.vanniktech.maven.publish")
     alias(libs.plugins.dokka)
+}
+
+android {
+    namespace = "com.zhangke.krouter"
+    defaultConfig {
+        consumerProguardFiles("consumer-rules.pro")
+    }
 }
 
 kotlin {

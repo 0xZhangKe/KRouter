@@ -2,8 +2,16 @@ import com.vanniktech.maven.publish.MavenPublishBaseExtension
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.library")
     alias(libs.plugins.dokka)
     id("com.vanniktech.maven.publish")
+}
+
+android {
+    namespace = "com.zhangke.krouter.annotation"
+    defaultConfig {
+        consumerProguardFiles("consumer-rules.pro")
+    }
 }
 
 kotlin {
