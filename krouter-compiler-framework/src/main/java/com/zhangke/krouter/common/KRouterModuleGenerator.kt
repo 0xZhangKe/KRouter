@@ -31,7 +31,9 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
     }
 
     private fun generateModelFile(destinations: List<KSClassDeclaration>): String {
-        val className = ReflectionContract.generateCollectionFileName()
+        val className = ReflectionContract.generateCollectionFileName(
+            name = System.identityHashCode(destinations).toString(16),
+        )
         val moduleClass = TypeSpec.classBuilder(className)
             .primaryConstructor(FunSpec.constructorBuilder().build())
             .addSuperinterface(KRouterModule::class)
