@@ -10,10 +10,8 @@ object ReflectionContract {
 
     const val AUTO_REDUCE_MODULE_CLASS_NAME = KRouterModuleManager.AUTO_REDUCE_MODULE_CLASS_NAME
 
-    fun generateCollectionFileName(): String {
-        // waiting 1 ms to avoid the same file name
-        runCatching { Thread.sleep(1) }
-        return "$COLLECTION_CLASS_NAME_PREFIX${System.currentTimeMillis()}"
+    fun generateCollectionFileName(name: String): String {
+        return "$COLLECTION_CLASS_NAME_PREFIX${name}"
     }
 
     fun isCollectionClass(name: String): Boolean {
