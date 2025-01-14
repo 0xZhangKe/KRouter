@@ -7,6 +7,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.zhangke.krouter.annotation.Destination
+import com.zhangke.krouter.annotation.Service
 import com.zhangke.krouter.common.KRouterModuleGenerator
 
 class CollectingProcessorProvider : SymbolProcessorProvider {
@@ -26,7 +27,12 @@ class CollectingProcessor(
         val destinations = resolver.getSymbolsWithAnnotation(Destination::class.qualifiedName!!)
             .map { it as KSClassDeclaration }
             .toList()
-        moduleGenerator.generateModule(destinations)
+
+        val services = resolver.getSymbolsWithAnnotation(Service::class.qualifiedName!!)
+            .filterIsInstance<KSClassDeclaration>()
+            .toList()
+
+        moduleGenerator.generateModule(destinations, services)
         return emptyList()
     }
 }

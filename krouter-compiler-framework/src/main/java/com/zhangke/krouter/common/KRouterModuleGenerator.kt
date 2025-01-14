@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.symbol.Nullability
@@ -11,31 +12,44 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.writeTo
 import com.zhangke.krouter.KRouterModule
 import com.zhangke.krouter.annotation.Destination
+import com.zhangke.krouter.annotation.NoImplementationService
 import com.zhangke.krouter.annotation.RouteParam
 import com.zhangke.krouter.annotation.RouteUri
+import com.zhangke.krouter.annotation.Service
 import com.zhangke.krouter.common.utils.findAnnotationValue
 import com.zhangke.krouter.common.utils.getRouterParamsNameValue
 import com.zhangke.krouter.common.utils.requireAnnotation
 import com.zhangke.krouter.internal.KRouterUri
+import kotlin.reflect.KClass
 
 class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment) {
 
-    fun generateModule(destinations: List<KSClassDeclaration>): String? {
-        if (destinations.isEmpty()) return null
-        return generateModelFile(destinations)
+    fun generateModule(
+        destinations: List<KSClassDeclaration>,
+        services: List<KSClassDeclaration>,
+    ): String? {
+        if (destinations.isEmpty() && services.isEmpty()) return null
+        return generateModelFile(destinations, services)
     }
 
-    private fun generateModelFile(destinations: List<KSClassDeclaration>): String {
+    private fun generateModelFile(
+        destinations: List<KSClassDeclaration>,
+        services: List<KSClassDeclaration>,
+    ): String {
         val className = ReflectionContract.generateCollectionFileName()
         val moduleClass = TypeSpec.classBuilder(className)
             .primaryConstructor(FunSpec.constructorBuilder().build())
             .addSuperinterface(KRouterModule::class)
             .addFunction(buildRouteFunction(destinations))
+            .addFunction(buildServiceFunction(services))
             .build()
         val fileSpec = FileSpec.builder(
             packageName = ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME,
@@ -69,6 +83,39 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
             codeBlockBuilder.unindent()
             codeBlockBuilder.addStatement("}")
             funSpecBuilder.addCode(codeBlockBuilder.build())
+        }
+        return funSpecBuilder.build()
+    }
+
+    private fun buildServiceFunction(services: List<KSClassDeclaration>): FunSpec {
+        val kClassType = KClass::class.asTypeName().parameterizedBy(TypeVariableName("*"))
+        val funSpecBuilder = FunSpec.builder("getServices")
+            .addModifiers(KModifier.OVERRIDE)
+            .addParameter("service", kClassType)
+            .returns(List::class.asTypeName().parameterizedBy(kClassType))
+        funSpecBuilder.addStatement(
+            "if (service == Any::class) throw IllegalArgumentException(\"service can not be Any\")"
+        )
+        if (services.isEmpty()) {
+            funSpecBuilder.addStatement("return emptyList()")
+        } else {
+            val codeBlockBuilder = CodeBlock.builder()
+            codeBlockBuilder.addStatement("return when (service) {")
+            codeBlockBuilder.indent()
+            services.groupBy { it.getServiceName() }
+                .forEach { (serviceName, serviceList) ->
+                    codeBlockBuilder.addStatement("${serviceName}::class -> listOf(")
+                    codeBlockBuilder.indent()
+                    serviceList.forEachIndexed { index, service ->
+                        codeBlockBuilder.addStatement("${service.qualifiedName!!.asString()}(),")
+                    }
+                    codeBlockBuilder.unindent()
+                    codeBlockBuilder.addStatement(")")
+                    codeBlockBuilder.addStatement("\n")
+                }
+            codeBlockBuilder.addStatement("else -> emptyList<Any>()")
+            codeBlockBuilder.unindent()
+            codeBlockBuilder.addStatement("}")
         }
         return funSpecBuilder.build()
     }
@@ -198,5 +245,26 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
     private fun KSPropertyDeclaration.isRouterUriField(): Boolean {
         val routerUriName = RouteUri::class.simpleName
         return this.annotations.any { it.shortName.asString() == routerUriName }
+    }
+
+    private fun KSClassDeclaration.getServiceName(): String {
+        val serviceName = Service::class.simpleName
+        environment.logger.error("serviceName: $serviceName")
+        val serviceInArgument = this.annotations.first { it.shortName.asString() == serviceName }
+            .arguments.first { it.name?.asString() == "service" }
+            .also {
+                (it.value as KSType)
+                environment.logger.error("arguments: ${it}, ${it.value}")
+            }
+            .value as KClass<*>
+        if (serviceInArgument == Any::class) {
+            throw IllegalArgumentException("service($serviceName) can not be Any")
+        }
+        if (serviceInArgument != NoImplementationService::class) return serviceInArgument.qualifiedName!!
+        val superTypeList = this.superTypes.toList()
+        if (superTypeList.size != 1) {
+            throw IllegalArgumentException("service($serviceName) super type not found")
+        }
+        return superTypeList.first().resolve().toClassName().canonicalName
     }
 }
