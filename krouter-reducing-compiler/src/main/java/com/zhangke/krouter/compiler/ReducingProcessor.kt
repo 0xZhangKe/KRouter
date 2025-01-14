@@ -9,6 +9,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.zhangke.krouter.annotation.Destination
+import com.zhangke.krouter.annotation.Service
 import com.zhangke.krouter.common.KRouterModuleGenerator
 import com.zhangke.krouter.common.ReflectionContract
 
@@ -29,16 +30,23 @@ class ReducingProcessor(private val environment: SymbolProcessorEnvironment) : S
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val autoModelClass = ReflectionContract.AUTO_REDUCE_MODULE_CLASS_NAME
         if (resolver.getClassDeclarationByName(autoModelClass) != null) return emptyList()
-        val moduleList = resolver.getDeclarationsFromPackage(ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME)
-            .mapNotNull { it as? KSClassDeclaration }
-            .filter { ReflectionContract.isCollectionClass(it.qualifiedName?.asString().orEmpty()) }
-            .toList()
+        val moduleList =
+            resolver.getDeclarationsFromPackage(ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME)
+                .mapNotNull { it as? KSClassDeclaration }
+                .filter {
+                    ReflectionContract.isCollectionClass(it.qualifiedName?.asString().orEmpty())
+                }
+                .toList()
 
         val destinations = resolver.getSymbolsWithAnnotation(Destination::class.qualifiedName!!)
             .filterIsInstance<KSClassDeclaration>()
             .toList()
 
-        val thisModuleClassName = moduleGenerator.generateModule(destinations)
+        val services = resolver.getSymbolsWithAnnotation(Service::class.qualifiedName!!)
+            .filterIsInstance<KSClassDeclaration>()
+            .toList()
+
+        val thisModuleClassName = moduleGenerator.generateModule(destinations, services)
 
         reduceGenerator.generate(moduleList, thisModuleClassName)
         return emptyList()

@@ -3,11 +3,18 @@ package com.zhangke.krouter.compiler
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.STAR
+import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
 import com.zhangke.krouter.KRouterModule
 import com.zhangke.krouter.common.ReflectionContract
+import kotlin.reflect.KClass
 
 class KRouterReduceGenerator(private val environment: SymbolProcessorEnvironment) {
 
@@ -19,6 +26,7 @@ class KRouterReduceGenerator(private val environment: SymbolProcessorEnvironment
             .addSuperinterface(KRouterModule::class)
             .addProperty(buildModuleList(list, thisModuleClassName))
             .addFunction(buildRouteFunction())
+            .addFunction(buildGetServiceFunction())
             .build()
         val fileSpec = FileSpec.builder(
             packageName = ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME,
@@ -59,6 +67,20 @@ class KRouterReduceGenerator(private val environment: SymbolProcessorEnvironment
             .returns(Any::class.asTypeName().copy(true))
         funSpecBuilder.addStatement(
             "return moduleList.firstNotNullOfOrNull { it.route(uri) }"
+        )
+        return funSpecBuilder.build()
+    }
+
+    private fun buildGetServiceFunction(): FunSpec {
+        val funSpecBuilder = FunSpec.builder("getServices")
+            .addModifiers(KModifier.OVERRIDE)
+            .addParameter("service", KClass::class.asTypeName().parameterizedBy(STAR))
+            .returns(
+                List::class.asTypeName()
+                    .parameterizedBy(KClass::class.asTypeName().parameterizedBy(STAR))
+            )
+        funSpecBuilder.addStatement(
+            "return moduleList.flatMap { it.getServices(service) }"
         )
         return funSpecBuilder.build()
     }

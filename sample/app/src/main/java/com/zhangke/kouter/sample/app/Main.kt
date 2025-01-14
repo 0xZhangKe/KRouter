@@ -1,9 +1,14 @@
 package com.zhangke.kouter.sample.app
 
 import com.zhangke.krouter.KRouter
+import com.zhangke.krouter.sample.core.HtmlParser
 import com.zhangke.krouter.sample.core.Screen
 
 fun main() {
+
+    KRouter.getServices<HtmlParser>().forEach { parser ->
+        println(parser::class.qualifiedName)
+    }
 
     KRouter.route<Screen>("screen/main?name=zhangke&id=123&size=12")?.content()
     KRouter.route<Screen>("screen/home/landing?url=mocked_url&showTitle=false&index=3")?.content()
@@ -17,5 +22,6 @@ fun main() {
     KRouter.route<Screen>("demo://router/screen/profile/detail?userId=1&userName=ke")?.content()
     KRouter.route<Screen>("screen/profile/second")?.content()
     KRouter.route<Screen>("screen/setting")?.content()
-    KRouter.route<Screen>("screen/setting/detail?index=1&title=title&id=33&showTitle=false&ratio=1")?.content()
+    KRouter.route<Screen>("screen/setting/detail?index=1&title=title&id=33&showTitle=false&ratio=1")
+        ?.content()
 }
