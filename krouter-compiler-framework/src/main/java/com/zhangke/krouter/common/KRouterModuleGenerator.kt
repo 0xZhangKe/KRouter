@@ -92,7 +92,7 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
         val funSpecBuilder = FunSpec.builder("getServices")
             .addModifiers(KModifier.OVERRIDE)
             .addParameter("service", kClassType)
-            .returns(List::class.asTypeName().parameterizedBy(kClassType))
+            .returns(List::class.asTypeName().parameterizedBy(Any::class.asTypeName()))
         funSpecBuilder.addStatement(
             "if (service == Any::class) throw IllegalArgumentException(\"service can not be Any\")"
         )
@@ -106,7 +106,7 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
                 .forEach { (serviceName, serviceList) ->
                     codeBlockBuilder.addStatement("${serviceName}::class -> listOf(")
                     codeBlockBuilder.indent()
-                    serviceList.forEachIndexed { index, service ->
+                    serviceList.forEach { service ->
                         codeBlockBuilder.addStatement("${service.qualifiedName!!.asString()}(),")
                     }
                     codeBlockBuilder.unindent()
@@ -116,6 +116,7 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
             codeBlockBuilder.addStatement("else -> emptyList<Any>()")
             codeBlockBuilder.unindent()
             codeBlockBuilder.addStatement("}")
+            funSpecBuilder.addCode(codeBlockBuilder.build())
         }
         return funSpecBuilder.build()
     }
@@ -249,18 +250,17 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
 
     private fun KSClassDeclaration.getServiceName(): String {
         val serviceName = Service::class.simpleName
-        environment.logger.error("serviceName: $serviceName")
         val serviceInArgument = this.annotations.first { it.shortName.asString() == serviceName }
-            .arguments.first { it.name?.asString() == "service" }
-            .also {
-                (it.value as KSType)
-                environment.logger.error("arguments: ${it}, ${it.value}")
-            }
-            .value as KClass<*>
+            .arguments.firstOrNull { it.name?.asString() == "service" }
+            ?.value as? KSType
         if (serviceInArgument == Any::class) {
             throw IllegalArgumentException("service($serviceName) can not be Any")
         }
-        if (serviceInArgument != NoImplementationService::class) return serviceInArgument.qualifiedName!!
+        val invalidName = NoImplementationService::class.qualifiedName
+        val serviceInArgumentName = serviceInArgument?.toClassName()?.canonicalName
+        if (serviceInArgument != null && invalidName != serviceInArgumentName) {
+            return serviceInArgument.toClassName().canonicalName
+        }
         val superTypeList = this.superTypes.toList()
         if (superTypeList.size != 1) {
             throw IllegalArgumentException("service($serviceName) super type not found")

@@ -75,10 +75,7 @@ class KRouterReduceGenerator(private val environment: SymbolProcessorEnvironment
         val funSpecBuilder = FunSpec.builder("getServices")
             .addModifiers(KModifier.OVERRIDE)
             .addParameter("service", KClass::class.asTypeName().parameterizedBy(STAR))
-            .returns(
-                List::class.asTypeName()
-                    .parameterizedBy(KClass::class.asTypeName().parameterizedBy(STAR))
-            )
+            .returns(List::class.asTypeName().parameterizedBy(Any::class.asTypeName()))
         funSpecBuilder.addStatement(
             "return moduleList.flatMap { it.getServices(service) }"
         )
