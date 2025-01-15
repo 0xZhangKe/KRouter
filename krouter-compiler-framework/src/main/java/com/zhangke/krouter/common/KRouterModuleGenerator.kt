@@ -45,7 +45,7 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
         services: List<KSClassDeclaration>,
     ): String {
         val className = ReflectionContract.generateCollectionFileName(
-            name = System.identityHashCode(destinations).toString(16),
+            name = System.identityHashCode(destinations + services).toString(16),
         )
         val moduleClass = TypeSpec.classBuilder(className)
             .primaryConstructor(FunSpec.constructorBuilder().build())
