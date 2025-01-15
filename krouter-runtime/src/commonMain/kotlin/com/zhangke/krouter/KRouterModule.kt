@@ -6,5 +6,5 @@ interface KRouterModule {
 
     fun route(uri: String): Any?
 
-    fun getServices(service: KClass<*>): List<KClass<*>>
+    fun getServices(service: KClass<*>): List<Any>
 }
