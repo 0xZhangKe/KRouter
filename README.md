@@ -24,6 +24,42 @@ val screen = KRouter.route<Screen>("screen/main?name=zhangke&id=123")
 
 KRouter currently provides three annotations: `@Destination`, `@RouteUri`, and `@RouterParam`.
 
+### Kotlin SPI
+The above method leverages Java’s capabilities. Kotlin Multiplatform does not inherently provide such capabilities, so we need to devise our own solution.
+
+Fortunately, KRouter naturally has the ability to collect information through annotations, and it can be easily adapted to support this.
+
+To begin with, KRouter provides a @Service annotation to denote an implementation class. During compilation, KRouter automatically collects class information, which allows all implementations to be discovered at runtime.
+```kotlin
+interface HtmlParser {
+
+    fun parse(document: String): String
+}
+
+// Module A
+@Service
+class Html1Parser : HtmlParser {
+
+    override fun parse(document: String): String {
+        return document
+    }
+}
+
+// Module B
+@Service(HtmlParser::class)
+class Html2Parser : HtmlParser {
+
+    override fun parse(document: String): String {
+        return document
+    }
+}
+
+// Application
+fun main() {
+    val parsers = KRouter.getServices<HtmlParser>()
+}
+```
+
 ### @Destination
 
 As the name suggests, the `@Destination` annotation marks the target class of a route, i.e., the destination, and takes a parameter as the route address.
