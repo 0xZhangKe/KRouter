@@ -1,8 +1,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.0xzhangke/krouter-runtime)](https://central.sonatype.com/artifact/io.github.0xzhangke/krouter-runtime)
 
-# KRouter2
-
-Due to time constraints, the first version of KRouter was hastily developed and only barely functional. Recently, I had some free time to redesign and refine its usage, adding support for Kotlin Multiplatform and parameter injection. The implementation was also completely revamped, replacing ServiceLoader with KSP for collecting route information. Additionally, it has been published to the Maven Central Repository.
+# KRouter
+KRouter is a tool for supporting Kotlin SPI mechanism and Router mechanism.
 
 ## How to Use
 
