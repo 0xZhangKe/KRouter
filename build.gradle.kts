@@ -61,11 +61,11 @@ object ProjectVersion {
     private const val MAJOR = "1"
 
     // functionality in a backwards compatible manner
-    private const val MONIR = "2"
+    private const val MINOR = "2"
 
     // backwards compatible bug fixes
-    private const val PATH = "1"
-    const val VERSION = "$MAJOR.$MONIR.$PATH"
+    private const val PATH = "2"
+    const val VERSION = "$MAJOR.$MINOR.$PATH"
 }
 
 tasks.dokkaHtmlMultiModule {
