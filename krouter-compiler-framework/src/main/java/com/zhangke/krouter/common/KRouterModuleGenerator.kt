@@ -28,6 +28,7 @@ import com.zhangke.krouter.common.utils.findAnnotationValue
 import com.zhangke.krouter.common.utils.getRouterParamsNameValue
 import com.zhangke.krouter.common.utils.requireAnnotation
 import com.zhangke.krouter.internal.KRouterUri
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment) {
@@ -44,10 +45,11 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
         destinations: List<KSClassDeclaration>,
         services: List<KSClassDeclaration>,
     ): String {
-        val className = ReflectionContract.generateCollectionFileName(
-            name = System.identityHashCode((destinations + services).sortedBy { it.hashCode() })
-                .toString(16),
-        )
+        val fileNameIdentity = (destinations + services).sortedBy { it.hashCode() }
+            .hashCode()
+            .let { abs(it) }
+            .toString(16)
+        val className = ReflectionContract.generateCollectionFileName(name = fileNameIdentity)
         val moduleClass = TypeSpec.classBuilder(className)
             .primaryConstructor(FunSpec.constructorBuilder().build())
             .addSuperinterface(KRouterModule::class)
