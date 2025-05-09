@@ -45,10 +45,17 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
         destinations: List<KSClassDeclaration>,
         services: List<KSClassDeclaration>,
     ): String {
-        val fileNameIdentity = (destinations + services).sortedBy { it.hashCode() }
+        val sortedNames = (destinations + services).mapNotNull { it.qualifiedName?.asString() }
+            .sorted()
+        environment.logger.warn("destinations and services: ${sortedNames.joinToString()}")
+        val fileNameIdentity = sortedNames
             .hashCode()
-            .let { abs(it) }
+            .let {
+                environment.logger.warn("destinations and services hashCode: $it")
+                abs(it)
+            }
             .toString(16)
+        environment.logger.warn("destinations and services fileNameIdentity: $fileNameIdentity")
         val className = ReflectionContract.generateCollectionFileName(name = fileNameIdentity)
         val moduleClass = TypeSpec.classBuilder(className)
             .primaryConstructor(FunSpec.constructorBuilder().build())
