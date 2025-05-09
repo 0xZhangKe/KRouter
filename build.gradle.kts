@@ -64,7 +64,7 @@ object ProjectVersion {
     private const val MINOR = "2"
 
     // backwards compatible bug fixes
-    private const val PATH = "4"
+    private const val PATH = "5"
     const val VERSION = "$MAJOR.$MINOR.$PATH"
 }
 
