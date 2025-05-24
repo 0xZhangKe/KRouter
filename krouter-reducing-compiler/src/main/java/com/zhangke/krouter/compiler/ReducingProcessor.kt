@@ -28,8 +28,12 @@ class ReducingProcessor(private val environment: SymbolProcessorEnvironment) : S
 
     @OptIn(KspExperimental::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        environment.logger.info("ReducingProcessor started processing...")
         val autoModelClass = ReflectionContract.AUTO_REDUCE_MODULE_CLASS_NAME
-        if (resolver.getClassDeclarationByName(autoModelClass) != null) return emptyList()
+        if (resolver.getClassDeclarationByName(autoModelClass) != null) {
+            environment.logger.info("ReducingClass already exists, skipping generation.")
+            return emptyList()
+        }
         val moduleList =
             resolver.getDeclarationsFromPackage(ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME)
                 .mapNotNull { it as? KSClassDeclaration }
@@ -37,6 +41,9 @@ class ReducingProcessor(private val environment: SymbolProcessorEnvironment) : S
                     ReflectionContract.isCollectionClass(it.qualifiedName?.asString().orEmpty())
                 }
                 .toList()
+
+        moduleList.joinToString { it.qualifiedName?.asString().orEmpty() }
+            .let { environment.logger.info("Found $it KRouter modules in the project.") }
 
         val destinations = resolver.getSymbolsWithAnnotation(Destination::class.qualifiedName!!)
             .filterIsInstance<KSClassDeclaration>()
@@ -47,8 +54,9 @@ class ReducingProcessor(private val environment: SymbolProcessorEnvironment) : S
             .toList()
 
         val thisModuleClassName = moduleGenerator.generateModule(destinations, services)
-
+        environment.logger.info("ReducingProcessor generated module: $thisModuleClassName.")
         reduceGenerator.generate(moduleList, thisModuleClassName)
+        environment.logger.info("ReducingProcessor finished processing.")
         return emptyList()
     }
 }

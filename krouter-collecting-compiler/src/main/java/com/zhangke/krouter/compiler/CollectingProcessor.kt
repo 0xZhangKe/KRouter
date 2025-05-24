@@ -24,15 +24,26 @@ class CollectingProcessor(
     private val moduleGenerator = KRouterModuleGenerator(environment)
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        environment.logger.info("CollectingProcessor started processing...")
         val destinations = resolver.getSymbolsWithAnnotation(Destination::class.qualifiedName!!)
             .map { it as KSClassDeclaration }
             .toList()
+
+        destinations.joinToString { it.simpleName.asString() }.let {
+            environment.logger.info("Found destinations: $it.")
+        }
 
         val services = resolver.getSymbolsWithAnnotation(Service::class.qualifiedName!!)
             .filterIsInstance<KSClassDeclaration>()
             .toList()
 
-        moduleGenerator.generateModule(destinations, services)
+        services.joinToString { it.simpleName.asString() }.let {
+            environment.logger.info("Found services: $it.")
+        }
+
+        val generatedModuleName = moduleGenerator.generateModule(destinations, services)
+        environment.logger.info("CollectingProcessor generated $generatedModuleName.")
+        environment.logger.info("CollectingProcessor finished processing.")
         return emptyList()
     }
 }
