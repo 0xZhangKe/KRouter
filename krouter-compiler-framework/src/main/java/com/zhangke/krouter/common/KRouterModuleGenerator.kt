@@ -143,8 +143,8 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
         val classFullName = destination.qualifiedName?.asString()!!
         codeBlockBuilder.add("\"$route\" -> {\n")
         val primaryConstructor = destination.primaryConstructor
-        val parameters = primaryConstructor?.parameters
-        if (primaryConstructor == null || parameters.isNullOrEmpty()) {
+        val constructorParameters = primaryConstructor?.parameters
+        if (primaryConstructor == null || constructorParameters.isNullOrEmpty()) {
             codeBlockBuilder.indent()
             codeBlockBuilder.add("$classFullName()")
             codeBlockBuilder.unindent()
@@ -152,13 +152,21 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
             codeBlockBuilder.indent()
             codeBlockBuilder.add("$classFullName(\n")
             with(codeBlockBuilder) {
-                buildConstructorParameters(classFullName, parameters)
+                buildConstructorParameters(classFullName, constructorParameters)
             }
             codeBlockBuilder.add(")")
             codeBlockBuilder.unindent()
         }
         val processingProperties = destination.getAllProperties()
-            .filter { it.hasBackingField }
+            .filter {
+                if (!it.hasBackingField) return@filter false
+                if (constructorParameters.isNullOrEmpty()) return@filter true
+                if (constructorParameters.any { it.name?.asString() == it.name?.asString() }) {
+                    return@filter false
+                } else {
+                    return@filter true
+                }
+            }
             .mapNotNull {
                 val paramName = it.getRouterParamsNameValue()
                 if (paramName.isNullOrEmpty()) {

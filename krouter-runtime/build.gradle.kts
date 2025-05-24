@@ -1,5 +1,4 @@
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
-import org.jetbrains.kotlin.config.LanguageFeature
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -25,10 +24,6 @@ kotlin {
     iosSimulatorArm64()
 
     sourceSets {
-
-        all {
-            languageSettings { enableLanguageFeature(LanguageFeature.ExpectActualClasses.name) }
-        }
 
         val commonMain by getting {
             dependencies {

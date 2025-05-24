@@ -1,6 +1,6 @@
 [versions]
-kotlin = "1.9.22"
-ksp = "1.9.22-1.0.17"
+kotlin = "2.1.21"
+ksp = "2.1.21-2.0.1"
 
 kotlinPoetVersion = "1.16.0"
 
