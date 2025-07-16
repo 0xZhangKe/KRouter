@@ -54,8 +54,8 @@ class KRouterModuleGenerator(private val environment: SymbolProcessorEnvironment
         val moduleClass = TypeSpec.classBuilder(className)
             .primaryConstructor(FunSpec.constructorBuilder().build())
             .addSuperinterface(KRouterModule::class)
-            .addFunction(buildRouteFunction(destinations))
-            .addFunction(buildServiceFunction(services))
+            .addFunction(buildRouteFunction(destinations.sortedBy { it.qualifiedName!!.asString() }))
+            .addFunction(buildServiceFunction(services.sortedBy { it.qualifiedName!!.asString() }))
             .build()
         val fileSpec = FileSpec.builder(
             packageName = ReflectionContract.KROUTER_GENERATED_PACKAGE_NAME,
